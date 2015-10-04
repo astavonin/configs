@@ -109,6 +109,7 @@ Plugin 'vim-scripts/grep.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
 Plugin 'kien/ctrlp.vim'
+Plugin 'vim-utils/vim-man'
 Plugin 'rust-lang/rust.vim'
 Plugin 'phildawes/racer'
 
