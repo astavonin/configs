@@ -69,6 +69,10 @@ function! InitExternalPlugins()
     let g:neocomplete#enable_auto_select = 1
     let g:neocomplete#same_filetypes = {}
     let g:neocomplete#same_filetypes._ = '_'
+
+    let g:ctrlp_working_path_mode = 'c'
+
+    let Grep_Default_Options = '-i'
 endfunction
 
 function! BindKeys()
@@ -109,9 +113,9 @@ Plugin 'vim-scripts/grep.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
 Plugin 'kien/ctrlp.vim'
-Plugin 'vim-utils/vim-man'
 Plugin 'rust-lang/rust.vim'
 Plugin 'phildawes/racer'
+Plugin 'vim-utils/vim-man'
 
 call vundle#end()
 filetype plugin indent on
