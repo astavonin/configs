@@ -82,7 +82,6 @@ function! BindKeys()
     imap <C-b> <esc><esc>:BufExplorer<cr>
     nmap <C-\> :TagbarToggle<CR>
     nmap <Leader>F :NERDTreeToggle<CR>
-    nmap <Leader>f :CtrlP<CR>
     cnoremap @ <c-r>=expand("%:h")<cr>/
     nmap <silent> <Leader>A :FSHere<cr>
     nmap fd :Rgrep<cr>
@@ -100,6 +99,10 @@ function! LocalConf()
     endif
 endfunc
 
+function! BindFileTypes()
+    au BufRead,BufNewFile *.mm set filetype=cpp
+endfunc
+
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
@@ -112,10 +115,11 @@ Plugin 'derekwyatt/vim-fswitch'
 Plugin 'vim-scripts/grep.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
-Plugin 'kien/ctrlp.vim'
+Plugin 'wincent/command-t'
 Plugin 'rust-lang/rust.vim'
 Plugin 'phildawes/racer'
-Plugin 'vim-utils/vim-man'
+Plugin 'szw/vim-tags'
+Plugin 'leafgarland/typescript-vim'
 
 call vundle#end()
 filetype plugin indent on
@@ -125,6 +129,7 @@ call LocalConf()
 call ConfigureView()
 call BindKeys()
 call InitExternalPlugins()
+call BindFileTypes()
 
 let g:tagbar_type_rust = {
     \ 'ctagstype' : 'rust',
