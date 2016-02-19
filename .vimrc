@@ -66,6 +66,11 @@ function! InitExternalPlugins()
     endif
     let g:neocomplete#keyword_patterns['default'] = '\h\w*'
 
+    if !exists('g:neocomplete#force_omni_input_patterns')
+        let g:neocomplete#force_omni_input_patterns = {}
+    endif
+    let g:neocomplete#force_omni_input_patterns.go = '[^.[:digit:] *\t]\.'
+
     let g:neocomplete#enable_auto_select = 1
     let g:neocomplete#same_filetypes = {}
     let g:neocomplete#same_filetypes._ = '_'
@@ -106,6 +111,7 @@ endfunc
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
+Plugin 'VundleVim/Vundle.vim'
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'Shougo/neocomplete.vim'
@@ -116,10 +122,9 @@ Plugin 'vim-scripts/grep.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
 Plugin 'wincent/command-t'
-Plugin 'rust-lang/rust.vim'
-Plugin 'phildawes/racer'
 Plugin 'szw/vim-tags'
 Plugin 'leafgarland/typescript-vim'
+Plugin 'fatih/vim-go'
 
 call vundle#end()
 filetype plugin indent on
@@ -130,17 +135,4 @@ call ConfigureView()
 call BindKeys()
 call InitExternalPlugins()
 call BindFileTypes()
-
-let g:tagbar_type_rust = {
-    \ 'ctagstype' : 'rust',
-    \ 'kinds'     : [
-        \ 'f:function',
-        \ 'm:macros',
-        \ 'T:types',
-        \ 'm:types1',
-        \ 'm:modules',
-        \ 'm:consts',
-        \ 'm:traits',
-    \ ],
-\ }
 
