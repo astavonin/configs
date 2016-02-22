@@ -1,4 +1,5 @@
 function! ConfigureView()
+    set shell=/bin/sh
     set number
     syntax on
     set incsearch
@@ -42,6 +43,7 @@ function! ConfigureView()
     set list listchars=tab:→\ ,trail:·
     filetype plugin on
     set colorcolumn=80
+    set completeopt-=preview
 endfunc
 
 function! s:my_cr_function()
@@ -78,6 +80,8 @@ function! InitExternalPlugins()
     let g:ctrlp_working_path_mode = 'c'
 
     let Grep_Default_Options = '-i'
+
+    let g:go_fmt_command = "goimports"
 endfunction
 
 function! BindKeys()
@@ -96,6 +100,15 @@ function! BindKeys()
     inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
     inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
     inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+endfunction
+
+function! BindGo()
+	au FileType go nmap <leader>gr <Plug>(go-run)
+	au FileType go nmap <leader>gb <Plug>(go-build)
+	au FileType go nmap <leader>gt <Plug>(go-test)
+	au FileType go nmap <leader>gc <Plug>(go-coverage)
+	au FileType go nmap <Leader>gs <Plug>(go-implements)
+	au FileType go nmap <Leader>gi <Plug>(go-info)
 endfunction
 
 function! LocalConf()
@@ -135,4 +148,5 @@ call ConfigureView()
 call BindKeys()
 call InitExternalPlugins()
 call BindFileTypes()
+call BindGo()
 
