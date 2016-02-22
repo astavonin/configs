@@ -109,6 +109,7 @@ function! BindGo()
 	au FileType go nmap <leader>gc <Plug>(go-coverage)
 	au FileType go nmap <Leader>gs <Plug>(go-implements)
 	au FileType go nmap <Leader>gi <Plug>(go-info)
+    au FileType go nmap <C-]> <Plug>(go-def)
 endfunction
 
 function! LocalConf()
