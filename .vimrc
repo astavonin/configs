@@ -102,6 +102,7 @@ function! BindKeys()
 endfunction
 
 function! BindGo()
+    au FileType go nmap <C-]> <Plug>(go-def)
     au FileType go nmap <leader>gr <Plug>(go-run)
     au FileType go nmap <leader>gb <Plug>(go-build)
     au FileType go nmap <leader>gt <Plug>(go-test)
