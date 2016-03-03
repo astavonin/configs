@@ -79,7 +79,7 @@ function! InitExternalPlugins()
 
     let g:ctrlp_working_path_mode = 'c'
 
-    let Grep_Default_Options = '-i'
+    let g:ag_working_path_mode="r"
 
     let g:go_fmt_command = "goimports"
 endfunction
@@ -93,8 +93,7 @@ function! BindKeys()
     nmap <Leader>F :NERDTreeToggle<CR>
     cnoremap @ <c-r>=expand("%:h")<cr>/
     nmap <silent> <Leader>A :FSHere<cr>
-    nmap fd :Rgrep<cr>
-    nmap fb :GrepBuffer<cr>
+    nmap fd :Ag<cr>
     inoremap <expr><C-g>     neocomplete#undo_completion()
     inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
     inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
@@ -103,13 +102,12 @@ function! BindKeys()
 endfunction
 
 function! BindGo()
-	au FileType go nmap <leader>gr <Plug>(go-run)
-	au FileType go nmap <leader>gb <Plug>(go-build)
-	au FileType go nmap <leader>gt <Plug>(go-test)
-	au FileType go nmap <leader>gc <Plug>(go-coverage)
-	au FileType go nmap <Leader>gs <Plug>(go-implements)
-	au FileType go nmap <Leader>gi <Plug>(go-info)
-    au FileType go nmap <C-]> <Plug>(go-def)
+    au FileType go nmap <leader>gr <Plug>(go-run)
+    au FileType go nmap <leader>gb <Plug>(go-build)
+    au FileType go nmap <leader>gt <Plug>(go-test)
+    au FileType go nmap <leader>gc <Plug>(go-coverage)
+    au FileType go nmap <Leader>gs <Plug>(go-implements)
+    au FileType go nmap <Leader>gi <Plug>(go-info)
 endfunction
 
 function! LocalConf()
@@ -132,13 +130,17 @@ Plugin 'Shougo/neocomplete.vim'
 Plugin 'majutsushi/tagbar'
 Plugin 'jlanzarotta/bufexplorer'
 Plugin 'derekwyatt/vim-fswitch'
-Plugin 'vim-scripts/grep.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
-Plugin 'wincent/command-t'
+Plugin 'wincent/command-t'  " cd ~/.vim/bundle/command-t/ruby/command-t
+                            " ruby extconf.rb; make
 Plugin 'szw/vim-tags'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'fatih/vim-go'
+Plugin 'rust-lang/rust.vim'
+Plugin 'racer-rust/vim-racer'
+Plugin 'rking/ag.vim'   " brew install the_silver_searcher
+Plugin 'tpope/vim-fugitive'
 
 call vundle#end()
 filetype plugin indent on
@@ -150,4 +152,3 @@ call BindKeys()
 call InitExternalPlugins()
 call BindFileTypes()
 call BindGo()
-
