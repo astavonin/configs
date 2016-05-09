@@ -121,6 +121,11 @@ function! BindFileTypes()
     au BufRead,BufNewFile *.mm set filetype=cpp
 endfunc
 
+au FileType qf call AdjustWindowHeight(3, 5)
+function! AdjustWindowHeight(minheight, maxheight)
+      exe max([min([line("$"), a:maxheight]), a:minheight]) . "wincmd _"
+endfunction
+
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
@@ -140,8 +145,11 @@ Plugin 'leafgarland/typescript-vim'
 Plugin 'fatih/vim-go'
 Plugin 'rust-lang/rust.vim'
 Plugin 'racer-rust/vim-racer'
+Plugin 'timonv/vim-cargo'
 Plugin 'rking/ag.vim'   " brew install the_silver_searcher
 Plugin 'tpope/vim-fugitive'
+Bundle 'cespare/vim-toml'
+Plugin 'tpope/vim-dispatch'
 
 call vundle#end()
 filetype plugin indent on
