@@ -141,15 +141,14 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'wincent/command-t'  " cd ~/.vim/bundle/command-t/ruby/command-t
                             " ruby extconf.rb; make
 Plugin 'szw/vim-tags'
-Plugin 'leafgarland/typescript-vim'
 Plugin 'fatih/vim-go'
 Plugin 'rust-lang/rust.vim'
 Plugin 'racer-rust/vim-racer'
-Plugin 'timonv/vim-cargo'
 Plugin 'rking/ag.vim'   " brew install the_silver_searcher
 Plugin 'tpope/vim-fugitive'
 Bundle 'cespare/vim-toml'
 Plugin 'tpope/vim-dispatch'
+Plugin 'chrisbra/vim-diff-enhanced'
 
 call vundle#end()
 filetype plugin indent on
