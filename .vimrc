@@ -99,6 +99,9 @@ function! BindKeys()
     inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
     inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
     inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+    autocmd FileType c,cpp,objc nnoremap <buffer><Leader>C :<C-u>ClangFormat<CR>
+    autocmd FileType c,cpp,objc vnoremap <buffer><Leader>C :ClangFormat<CR>
+    nmap <silent> <Leader>b :Make<cr>
 endfunction
 
 function! BindGo()
@@ -121,9 +124,24 @@ function! BindFileTypes()
     au BufRead,BufNewFile *.mm set filetype=cpp
 endfunc
 
+function! InitClangFormat()
+    let g:clang_format#style_options = {
+                \ "AlignConsecutiveAssignments" : "true",
+                \ "AlignConsecutiveDeclarations" : "true",
+                \ "AllowShortFunctionsOnASingleLine" : "false",
+                \ "SpaceBeforeParens" : "Never",
+                \ "SpacesInParentheses" : "true",
+                \ "UseTab" : "Never",
+                \ "AccessModifierOffset" : -4,
+                \ "AlwaysBreakTemplateDeclarations" : "true",
+                \ "Standard" : "C++11",
+                \ "BreakConstructorInitializersBeforeComma" : "true",
+                \ "BreakBeforeBraces" : "Allman"}
+endfunct
+
 au FileType qf call AdjustWindowHeight(3, 5)
 function! AdjustWindowHeight(minheight, maxheight)
-      exe max([min([line("$"), a:maxheight]), a:minheight]) . "wincmd _"
+    exe max([min([line("$"), a:maxheight]), a:minheight]) . "wincmd _"
 endfunction
 
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -142,13 +160,13 @@ Plugin 'wincent/command-t'  " cd ~/.vim/bundle/command-t/ruby/command-t
                             " ruby extconf.rb; make
 Plugin 'szw/vim-tags'
 Plugin 'fatih/vim-go'
-Plugin 'rust-lang/rust.vim'
-Plugin 'racer-rust/vim-racer'
 Plugin 'rking/ag.vim'   " brew install the_silver_searcher
 Plugin 'tpope/vim-fugitive'
 Bundle 'cespare/vim-toml'
 Plugin 'tpope/vim-dispatch'
 Plugin 'chrisbra/vim-diff-enhanced'
+Plugin 'davidhalter/jedi-vim'
+Plugin 'rhysd/vim-clang-format'
 
 call vundle#end()
 filetype plugin indent on
@@ -160,3 +178,4 @@ call BindKeys()
 call InitExternalPlugins()
 call BindFileTypes()
 call BindGo()
+call InitClangFormat()
