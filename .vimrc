@@ -167,6 +167,7 @@ Plugin 'tpope/vim-dispatch'
 Plugin 'chrisbra/vim-diff-enhanced'
 Plugin 'davidhalter/jedi-vim'
 Plugin 'rhysd/vim-clang-format'
+Plugin 'freitass/todo.txt-vim'
 
 call vundle#end()
 filetype plugin indent on
