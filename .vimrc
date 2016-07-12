@@ -82,6 +82,8 @@ function! InitExternalPlugins()
     let g:ag_working_path_mode="r"
 
     let g:go_fmt_command = "goimports"
+
+    let g:vim_tags_auto_generate = 1
 endfunction
 
 function! BindKeys()
@@ -102,6 +104,7 @@ function! BindKeys()
     autocmd FileType c,cpp,objc nnoremap <buffer><Leader>C :<C-u>ClangFormat<CR>
     autocmd FileType c,cpp,objc vnoremap <buffer><Leader>C :ClangFormat<CR>
     nmap <silent> <Leader>b :Make<cr>
+    nmap <silent> <Leader>T :TagsGenerate!<cr>
 endfunction
 
 function! BindGo()
@@ -122,6 +125,8 @@ endfunc
 
 function! BindFileTypes()
     au BufRead,BufNewFile *.mm set filetype=cpp
+    au BufRead,BufNewFile *.proto set filetype=proto
+    au BufRead,BufNewFile *.protoc set filetype=proto
 endfunc
 
 function! InitClangFormat()
@@ -168,7 +173,7 @@ Plugin 'chrisbra/vim-diff-enhanced'
 Plugin 'davidhalter/jedi-vim'
 Plugin 'rhysd/vim-clang-format'
 Plugin 'freitass/todo.txt-vim'
-
+Bundle 'uarun/vim-protobuf'
 call vundle#end()
 filetype plugin indent on
 
