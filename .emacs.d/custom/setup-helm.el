@@ -7,9 +7,11 @@
  helm-gtags-pulse-at-cursor t
  helm-gtags-prefix-key "\C-cg"
  helm-gtags-suggested-key-mapping t
- helm-mode-fuzzy-match t
- helm-candidate-number-limit 100
+ helm-candidate-number-limit 99
+ helm-gtags-maximum-candidates 99
+ helm-gtags-path-style 'relative
  )
+
 
 (require 'helm-gtags)
 
@@ -22,7 +24,6 @@
 (require 'helm-ag)
 
 (helm-mode 1)
-
 
 (global-set-key (kbd "M-x") 'helm-M-x)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
@@ -40,6 +41,7 @@
 (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
 
 
+(add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
 (provide 'setup-helm)
 

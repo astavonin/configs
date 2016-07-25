@@ -12,6 +12,7 @@
 (global-hl-line-mode 1)
 (electric-pair-mode 1)
 (setq inhibit-startup-message t)
+(global-subword-mode 1)
 
 (require 'whitespace)
 (setq whitespace-style '(lines))
@@ -31,3 +32,12 @@
 (color-theme-montz)
 
 (provide 'setup-global-view)
+
+(defun show-file-name ()
+  "Show the full path file name in the minibuffer."
+  (interactive)
+  (message (buffer-file-name)))
+
+(global-set-key [M-f1] 'show-file-name)
+
+(setq compilation-scroll-output t)

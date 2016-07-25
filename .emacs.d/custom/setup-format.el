@@ -53,5 +53,9 @@
   (progn 
     (c-add-style "My Coding Style" bws-c-style t)))
 (add-hook 'c++-mode-hook 'lconfig-c-mode)
+(add-hook 'c-mode-hook 'lconfig-c-mode)
+
+(require 'comment-dwim-2)
+(global-set-key (kbd "M-;") 'comment-dwim-2)
 
 (provide 'setup-format)

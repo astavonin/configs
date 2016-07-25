@@ -14,6 +14,9 @@
 		      clang-format
 		      fill-column-indicator
 		      magit
+		      projectile
+		      helm-projectile
+		      comment-dwim-2
 		      ))
 
 (defun install-packages ()
@@ -31,9 +34,38 @@
 
 (add-to-list 'load-path "~/.emacs.d/custom")
 
+(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+(setq exec-path (append exec-path '("/usr/local/bin")))
+
 (require 'setup-helm)
+(require 'setup-project)
 (require 'setup-global-view)
 (require 'setup-complete)
 (require 'setup-format)
 (require 'setup-helpers)
 (require 'setup-vcc)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(safe-local-variable-values
+   (quote
+    ((eval progn
+	   (require
+	    (quote projectile))
+	   (puthash
+	    (projectile-project-root)
+	    "./adlm-make.sh debug build /Users/astavonin/projects/AdLM/develop/global/src" projectile-compilation-cmd-map))
+     (eval progn
+	   (require
+	    (quote projectile))
+	   (puthash
+	    (projectile-project-root)
+	    "./adlm-make.sh debug build" projectile-compilation-cmd-map))))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
