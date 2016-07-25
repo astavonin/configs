@@ -1,6 +1,7 @@
 
-(require 'auto-complete-config)
-(ac-config-default)
+(require 'auto-complete)
+(global-auto-complete-mode t)
+
 (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
 (setq ac-delay 0.0)
 

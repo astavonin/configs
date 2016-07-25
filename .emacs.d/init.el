@@ -56,6 +56,15 @@
 	    (quote projectile))
 	   (puthash
 	    (projectile-project-root)
+	    "make" projectile-compilation-cmd-map)
+	   (puthash
+	    (projectile-project-root)
+	    "make test" projectile-test-cmd-map))
+     (eval progn
+	   (require
+	    (quote projectile))
+	   (puthash
+	    (projectile-project-root)
 	    "./adlm-make.sh debug build /Users/astavonin/projects/AdLM/develop/global/src" projectile-compilation-cmd-map))
      (eval progn
 	   (require

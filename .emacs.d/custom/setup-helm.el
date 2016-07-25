@@ -39,7 +39,7 @@
 (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
 (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
 (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
-
+(define-key helm-gtags-mode-map (kbd "C-c g u") 'helm-gtags-update-tags)
 
 (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
