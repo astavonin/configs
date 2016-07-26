@@ -1,23 +1,23 @@
 (require 'package)
 (add-to-list 'package-archives
-	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
 (defvar my-packages '(color-theme
-		      cmake-mode
-		      ggtags
-		      helm
-		      helm-gtags
-		      helm-ag
-		      auto-complete
-		      yasnippet
-		      clang-format
-		      fill-column-indicator
-		      magit
-		      projectile
-		      helm-projectile
-		      comment-dwim-2
-		      ))
+                      cmake-mode
+                      ggtags
+                      helm
+                      helm-gtags
+                      helm-ag
+                      auto-complete
+                      yasnippet
+                      clang-format
+                      fill-column-indicator
+                      magit
+                      projectile
+                      helm-projectile
+                      comment-dwim-2
+                      ))
 
 (defun install-packages ()
   "Install all required packages."
@@ -52,26 +52,11 @@
  '(safe-local-variable-values
    (quote
     ((eval progn
-	   (require
-	    (quote projectile))
-	   (puthash
-	    (projectile-project-root)
-	    "make" projectile-compilation-cmd-map)
-	   (puthash
-	    (projectile-project-root)
-	    "make test" projectile-test-cmd-map))
-     (eval progn
-	   (require
-	    (quote projectile))
-	   (puthash
-	    (projectile-project-root)
-	    "./adlm-make.sh debug build /Users/astavonin/projects/AdLM/develop/global/src" projectile-compilation-cmd-map))
-     (eval progn
-	   (require
-	    (quote projectile))
-	   (puthash
-	    (projectile-project-root)
-	    "./adlm-make.sh debug build" projectile-compilation-cmd-map))))))
+           (require
+            (quote projectile))
+           (puthash
+            (projectile-project-root)
+            "./adlm-make.sh debug build /Users/astavonin/projects/AdLM/develop/global/src" projectile-compilation-cmd-map))))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
