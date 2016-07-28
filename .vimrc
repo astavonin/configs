@@ -174,6 +174,7 @@ Plugin 'davidhalter/jedi-vim'
 Plugin 'rhysd/vim-clang-format'
 Plugin 'freitass/todo.txt-vim'
 Bundle 'uarun/vim-protobuf'
+Bundle 'jiangmiao/auto-pairs'
 call vundle#end()
 filetype plugin indent on
 
