@@ -9,7 +9,6 @@
                       helm
                       helm-gtags
                       helm-ag
-                      auto-complete
                       yasnippet
                       clang-format
                       fill-column-indicator
@@ -17,6 +16,9 @@
                       projectile
                       helm-projectile
                       comment-dwim-2
+                      cedet
+                      use-package
+                      company
                       ))
 
 (defun install-packages ()
@@ -38,12 +40,14 @@
 (setq exec-path (append exec-path '("/usr/local/bin")))
 
 (require 'setup-helm)
-(require 'setup-project)
 (require 'setup-global-view)
 (require 'setup-complete)
 (require 'setup-format)
 (require 'setup-helpers)
 (require 'setup-vcc)
+(require 'setup-project)
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -56,7 +60,10 @@
             (quote projectile))
            (puthash
             (projectile-project-root)
-            "./adlm-make.sh debug build /Users/astavonin/projects/AdLM/develop/global/src" projectile-compilation-cmd-map))))))
+            "make" projectile-compilation-cmd-map)
+           (puthash
+            (projectile-project-root)
+            "make test" projectile-test-cmd-map))))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

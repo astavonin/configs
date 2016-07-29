@@ -1,28 +1,41 @@
-(require 'auto-complete-config)
-(ac-config-default)
+(require 'company)
+(require 'semantic)
 
-(setq-default
- ac-sources '(
-              ac-source-words-in-all-buffer
-              ac-source-words-in-buffer
-              ac-source-files-in-current-dir
-              )
- )
-(defun auto-complete-mode-maybe ()
-  "Overwrite auto-complete-mode-maybe which by defaults turns autocomplete only"
-  "on for buffers listed in ac-modes."
-  (unless (minibufferp (current-buffer))
-    (auto-complete-mode 1)))
-(setq  ac-use-fuzzy t)
-(setq ac-ignore-case (quote smart))
-(global-auto-complete-mode t)
+(use-package semantic
+  :ensure t
+  :config
+  (require 'semantic)
+  (require 'semantic/bovine/gcc)
+  (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
+  (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
+  (semantic-mode 1))
 
-(define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
-(setq ac-delay 0.0)
 
-(defun ac-common-setup ()
-  (setq ac-sources (append ac-sources '(ac-source-gtags
-                                        ac-source-words-in-all-buffer))))
+(use-package company
+  :ensure t
+  :config
+  (setq company-echo-delay 0)
+  (setq company-begin-commands '(self-insert-command))
+  (setq company-dabbrev-downcase nil)
+  (setq company-backends '(company-c-headers company-files
+                                             (company-gtags company-dabbrev-code)
+                                             (company-dabbrev)
+                                             ))
+  (global-set-key [C-tab] 'company-complete)
+  (global-company-mode))
+
+
+(use-package company-c-headers
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-c-headers)
+  (add-hook 'c-mode-hook (lambda ()
+        (setq company-c-headers-path-system (semantic-gcc-get-include-paths "c"))))
+  (add-hook 'c++-mode-hook (lambda ()
+        (setq company-c-headers-path-system (semantic-gcc-get-include-paths "c++")))))
+
 
 (require 'yasnippet)
 (yas-global-mode 1)
