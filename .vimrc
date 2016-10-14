@@ -27,7 +27,6 @@ function! ConfigureView()
     set shiftwidth=4
     set softtabstop=4
     set tabstop=4
-    set statusline=%<%f%h%m%r\ %b\ %{&encoding}\ 0x\ \ %l,%c%V\ %P
     set laststatus=2
     set smartindent
     set showmatch
@@ -156,13 +155,14 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'Shougo/neocomplete.vim'
+Plugin 'Shougo/neoinclude.vim'
 Plugin 'majutsushi/tagbar'
 Plugin 'jlanzarotta/bufexplorer'
 Plugin 'derekwyatt/vim-fswitch'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
 Plugin 'wincent/command-t'  " cd ~/.vim/bundle/command-t/ruby/command-t
-                            " ruby extconf.rb; make
+" ruby extconf.rb; make
 Plugin 'szw/vim-tags'
 Plugin 'fatih/vim-go'
 Plugin 'rking/ag.vim'   " brew install the_silver_searcher
@@ -175,6 +175,8 @@ Plugin 'rhysd/vim-clang-format'
 Plugin 'freitass/todo.txt-vim'
 Bundle 'uarun/vim-protobuf'
 Bundle 'jiangmiao/auto-pairs'
+Bundle 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 call vundle#end()
 filetype plugin indent on
 
