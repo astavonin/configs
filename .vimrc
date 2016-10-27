@@ -92,6 +92,7 @@ function! BindKeys()
     imap <C-b> <esc><esc>:BufExplorer<cr>
     nmap <C-\> :TagbarToggle<CR>
     nmap <Leader>F :NERDTreeToggle<CR>
+    nmap <Leader>t :CtrlP<CR>
     cnoremap @ <c-r>=expand("%:h")<cr>/
     nmap <silent> <Leader>A :FSHere<cr>
     nmap fd :Ag<cr>
@@ -156,12 +157,14 @@ Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'Shougo/neocomplete.vim'
 Plugin 'Shougo/neoinclude.vim'
+" VimProcInstall
+Plugin 'Shougo/vimproc.vim'
 Plugin 'majutsushi/tagbar'
 Plugin 'jlanzarotta/bufexplorer'
 Plugin 'derekwyatt/vim-fswitch'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
-Plugin 'wincent/command-t'  " cd ~/.vim/bundle/command-t/ruby/command-t
+"Plugin 'wincent/command-t'  " cd ~/.vim/bundle/command-t/ruby/command-t
 " ruby extconf.rb; make
 Plugin 'szw/vim-tags'
 Plugin 'fatih/vim-go'
@@ -177,6 +180,8 @@ Bundle 'uarun/vim-protobuf'
 Bundle 'jiangmiao/auto-pairs'
 Bundle 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'eagletmt/ghcmod-vim'
+Plugin 'eagletmt/neco-ghc'
 call vundle#end()
 filetype plugin indent on
 
