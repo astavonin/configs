@@ -79,9 +79,9 @@ function! InitExternalPlugins()
 
     let g:ctrlp_working_path_mode = 'c'
 
-    let g:ag_working_path_mode="r"
-
     let g:go_fmt_command = "goimports"
+
+    let g:ackprg = 'ag --vimgrep'
 
     let g:vim_tags_auto_generate = 1
 
@@ -125,10 +125,11 @@ function! BindKeys()
     imap <C-b> <esc><esc>:BufExplorer<cr>
     nmap <C-\> :TagbarToggle<CR>
     nmap <Leader>F :NERDTreeToggle<CR>
-    nmap <Leader>t :CtrlP<CR>
+    nmap <Leader>t :CommandT<CR>
     cnoremap @ <c-r>=expand("%:h")<cr>/
     nmap <silent> <Leader>A :FSHere<cr>
-    nmap fd :Ag<cr>
+    cnoreabbrev Ack Ack!
+    nmap fd :Ack<Space>
     inoremap <expr><C-g>     neocomplete#undo_completion()
     inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
     inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
@@ -190,18 +191,17 @@ Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'Shougo/neocomplete.vim'
 Plugin 'Shougo/neoinclude.vim'
-" VimProcInstall
-Plugin 'Shougo/vimproc.vim'
+Plugin 'Shougo/vimproc.vim' " VimProcInstall
 Plugin 'majutsushi/tagbar'
 Plugin 'jlanzarotta/bufexplorer'
 Plugin 'derekwyatt/vim-fswitch'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
-"Plugin 'wincent/command-t'  " cd ~/.vim/bundle/command-t/ruby/command-t
+Plugin 'wincent/command-t'  " cd ~/.vim/bundle/command-t/ruby/command-t
 " ruby extconf.rb; make
 Plugin 'szw/vim-tags'
 Plugin 'fatih/vim-go'
-Plugin 'rking/ag.vim'   " brew install the_silver_searcher
+Plugin 'mileszs/ack.vim' " brew install the_silver_searcher
 Plugin 'tpope/vim-fugitive'
 Bundle 'cespare/vim-toml'
 Plugin 'tpope/vim-dispatch'
@@ -215,6 +215,7 @@ Bundle 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'eagletmt/ghcmod-vim'
 Plugin 'eagletmt/neco-ghc'
+Plugin 'rust-lang/rust.vim'
 call vundle#end()
 filetype plugin indent on
 
