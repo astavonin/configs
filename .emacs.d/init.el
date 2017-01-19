@@ -8,7 +8,7 @@
                       ggtags
                       helm
                       helm-gtags
-                      helm-ag
+                      helm-company
                       yasnippet
                       clang-format
                       fill-column-indicator
@@ -18,6 +18,7 @@
                       comment-dwim-2
                       cedet
                       use-package
+                      todotxt
                       company
                       ))
 
@@ -47,23 +48,14 @@
 (require 'setup-vcc)
 (require 'setup-project)
 
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(safe-local-variable-values
+ '(package-selected-packages
    (quote
-    ((eval progn
-           (require
-            (quote projectile))
-           (puthash
-            (projectile-project-root)
-            "make" projectile-compilation-cmd-map)
-           (puthash
-            (projectile-project-root)
-            "make test" projectile-test-cmd-map))))))
+    (todotxt yasnippet use-package sr-speedbar protobuf-mode magit helm-projectile helm-gtags helm-company helm-ag ggtags fill-column-indicator company-c-headers comment-dwim-2 color-theme cmake-mode clang-format))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

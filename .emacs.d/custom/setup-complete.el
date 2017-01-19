@@ -42,4 +42,6 @@
 
 (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
 
+(require 'helm-company)
+
 (provide 'setup-complete)

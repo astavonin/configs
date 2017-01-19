@@ -3,18 +3,6 @@
 (require 'clang-format)
 (global-set-key [C-M-tab] 'clang-format-region)
 
-;;  (c-add-style "microsoft"
-;;               '("stroustrup"
-;;                 (c-offsets-alist
-;;                  (innamespace . -)
-;;                  (inline-open . 0)
-;;                  (inher-cont . c-lineup-multi-inher)
-;;                  (arglist-cont-nonempty . +)
-;;               (arglist-intro '+)
-;;                  (template-args-cont . +)
-;;               (arglist-cont-nonempty 'c-lineup-argcont))))
-;; (setq c-default-style "microsoft")
-
 (setq bws-c-style
       '((c-basic-offset                 . 4)
         (indent-tabs-mode               . nil)

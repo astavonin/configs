@@ -13,6 +13,8 @@
 (electric-pair-mode 1)
 (setq inhibit-startup-message t)
 (global-subword-mode 1)
+(tool-bar-mode -1)
+(setq auto-save-default nil)
 
 (require 'whitespace)
 (setq whitespace-style '(lines))
@@ -31,13 +33,10 @@
 (setq color-theme-is-global t)
 (color-theme-montz)
 
-(provide 'setup-global-view)
-
-(defun show-file-name ()
-  "Show the full path file name in the minibuffer."
-  (interactive)
-  (message (buffer-file-name)))
-
-(global-set-key [M-f1] 'show-file-name)
-
 (setq compilation-scroll-output t)
+
+(setq frame-title-format
+      (list (format "%s %%S: %%j " (system-name))
+            '(buffer-file-name "%f" (dired-directory dired-directory "%b"))))
+
+(provide 'setup-global-view)

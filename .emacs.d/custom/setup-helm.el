@@ -10,6 +10,8 @@
  helm-candidate-number-limit 99
  helm-gtags-maximum-candidates 99
  helm-gtags-path-style 'relative
+ helm-mode-fuzzy-match t
+ helm-completion-in-region-fuzzy-match t
  )
 
 
