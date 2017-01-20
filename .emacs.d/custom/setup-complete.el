@@ -21,8 +21,7 @@
   (setq company-begin-commands '(self-insert-command))
   (setq company-dabbrev-downcase nil)
   (setq company-backends '(company-c-headers company-files
-                                             (company-go)
-                                             (company-gtags company-dabbrev-code)
+                                             (company-gtags company-go company-dabbrev-code)
                                              (company-dabbrev)
                                              ))
   (global-set-key [C-tab] 'company-complete)

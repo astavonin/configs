@@ -47,6 +47,8 @@
 (global-set-key (kbd "M-;") 'comment-dwim-2)
 
 (defun my-go-mode-hook ()
+  (setq gofmt-command "goimports")
+  (setq tab-width 4)
   (add-hook 'before-save-hook 'gofmt-before-save)
   (local-set-key (kbd "M-.") 'godef-jump)
   (local-set-key (kbd "M-*") 'pop-tag-mark)

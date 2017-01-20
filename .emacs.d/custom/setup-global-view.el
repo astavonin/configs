@@ -15,6 +15,9 @@
 (global-subword-mode 1)
 (tool-bar-mode -1)
 (setq auto-save-default nil)
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(setq tab-width 4)
 
 (require 'whitespace)
 (setq whitespace-style '(lines))
