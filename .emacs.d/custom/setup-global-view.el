@@ -8,7 +8,7 @@
 (setq ring-bell-function 'ignore)
 (add-to-list 'default-frame-alist '(height . 40))
 (add-to-list 'default-frame-alist '(width . 110))
-(set-face-attribute 'default nil :height 200)
+(set-face-attribute 'default nil :height 160)
 (global-hl-line-mode 1)
 (electric-pair-mode 1)
 (setq inhibit-startup-message t)
