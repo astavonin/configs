@@ -21,6 +21,8 @@
                       use-package
                       todotxt
                       company
+                      company-go
+                      exec-path-from-shell
                       ))
 
 (defun install-packages ()
@@ -38,8 +40,12 @@
 
 (add-to-list 'load-path "~/.emacs.d/custom")
 
-(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
-(setq exec-path (append exec-path '("/usr/local/bin")))
+(exec-path-from-shell-initialize)
+(setenv "GOPATH" (exec-path-from-shell-copy-env "GOPATH"))
+(setenv "GOROOT" (exec-path-from-shell-copy-env "GOROOT"))
+
+;; (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin")))
+;; (setq exec-path (append exec-path '("/usr/local/bin")))
 
 (require 'setup-helm)
 (require 'setup-global-view)

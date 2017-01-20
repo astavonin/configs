@@ -1,5 +1,6 @@
 (require 'company)
 (require 'semantic)
+(require 'company-go)
 
 (use-package semantic
   :ensure t
@@ -20,6 +21,7 @@
   (setq company-begin-commands '(self-insert-command))
   (setq company-dabbrev-downcase nil)
   (setq company-backends '(company-c-headers company-files
+                                             (company-go)
                                              (company-gtags company-dabbrev-code)
                                              (company-dabbrev)
                                              ))

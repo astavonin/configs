@@ -46,4 +46,11 @@
 (require 'comment-dwim-2)
 (global-set-key (kbd "M-;") 'comment-dwim-2)
 
+(defun my-go-mode-hook ()
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  (local-set-key (kbd "M-.") 'godef-jump)
+  (local-set-key (kbd "M-*") 'pop-tag-mark)
+  )
+(add-hook 'go-mode-hook 'my-go-mode-hook)
+
 (provide 'setup-format)
