@@ -23,6 +23,12 @@
 		     (thing-at-point 'symbol)))
 	(occur string)))
 
+(defun indent-buffer ()
+  (interactive)
+  (save-excursion
+    (indent-region (point-min) (point-max) nil)))
+
+(global-set-key [f12] 'indent-buffer)
 (global-set-key (kbd "C-c C-j") 'join-line)
 (global-set-key (kbd "M-s") 'search-word-under-cursor)
 (global-set-key (kbd "S-M-C-v") 'scroll-other-window-down)

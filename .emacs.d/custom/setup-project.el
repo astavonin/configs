@@ -7,4 +7,6 @@
 (setq projectile-completion-system 'helm)
 (setq projectile-indexing-method 'alien)
 
+(global-set-key (kbd "<f9>") 'projectile-compile-project)
+
 (provide 'setup-project)
