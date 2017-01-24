@@ -5,6 +5,7 @@
 
 (defvar my-packages '(color-theme
                       cmake-mode
+                      markdown-mode
                       ggtags
                       helm
                       helm-gtags
