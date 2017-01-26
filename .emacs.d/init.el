@@ -60,3 +60,4 @@
 (require 'setup-helpers)
 (require 'setup-vcc)
 (require 'setup-project)
+(require `setup-org)
