@@ -36,6 +36,8 @@
 (global-set-key (kbd "C-c d l") 'desktop-read)
 (global-set-key (kbd "C-o") 'vi-open-line-below)
 (global-set-key (kbd "S-C-o") 'vi-open-line-above)
+(global-set-key [f4] 'next-error)
+(global-set-key [S-f4] 'previous-error)
 
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup"))
   backup-by-copying t    ; Don't delink hardlinks
