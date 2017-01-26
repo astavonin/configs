@@ -68,4 +68,13 @@
 (require 'todotxt)
 (add-to-list 'auto-mode-alist '("\\todo.txt\\'" . todotxt-mode))
 
+(autoload 'ghc-init "ghc" nil t)
+(autoload 'ghc-debug "ghc" nil t)
+
+(defun my-haskell-mode-hook()
+  (ghc-init)
+  (local-set-key (kbd "<f12>") 'hindent-reformat-buffer))
+
+(add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
+
 (provide 'setup-format)

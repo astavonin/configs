@@ -8,6 +8,9 @@
                       markdown-mode
                       ggtags
                       helm
+                      haskell-mode
+                      ghc
+                      hindent
                       helm-gtags
                       helm-company
                       helm-ag
@@ -23,6 +26,7 @@
                       todotxt
                       company
                       company-go
+                      company-ghc
                       exec-path-from-shell
                       ))
 
@@ -45,8 +49,9 @@
 (setenv "GOPATH" (exec-path-from-shell-copy-env "GOPATH"))
 (setenv "GOROOT" (exec-path-from-shell-copy-env "GOROOT"))
 
-;; (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin")))
-;; (setq exec-path (append exec-path '("/usr/local/bin")))
+(let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
+  (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+  (add-to-list 'exec-path my-cabal-path))
 
 (require 'setup-helm)
 (require 'setup-global-view)

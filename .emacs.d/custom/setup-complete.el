@@ -21,10 +21,11 @@
   (setq company-begin-commands '(self-insert-command))
   (setq company-dabbrev-downcase nil)
   (setq company-backends '(company-c-headers company-files
-                                             (company-gtags company-go company-dabbrev-code)
+                                             (company-gtags company-go company-dabbrev-code company-ghc)
                                              (company-dabbrev)
                                              ))
   (global-set-key [C-tab] 'company-complete)
+  (custom-set-variables '(company-ghc-show-info t))
   (global-company-mode))
 
 
