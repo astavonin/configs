@@ -36,7 +36,12 @@
 (setq color-theme-is-global t)
 (color-theme-montz)
 
-(setq compilation-scroll-output t)
+(defun my-compilation-mode-hook ()
+  (setq truncate-lines nil)
+  (visual-line-mode 1)
+  (setq compilation-scroll-output t)
+  )
+(add-hook 'compilation-mode-hook 'my-compilation-mode-hook)
 
 (setq frame-title-format
       (list (format "%s %%S: %%j " (system-name))
