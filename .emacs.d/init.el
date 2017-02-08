@@ -6,6 +6,7 @@
 (defvar my-packages '(color-theme
                       cmake-mode
                       markdown-mode
+                      json-mode
                       ggtags
                       helm
                       haskell-mode
