@@ -77,4 +77,6 @@
 
 (add-hook 'haskell-mode-hook 'my-haskell-mode-hook)
 
+(setq cmake-tab-width 4)
+
 (provide 'setup-format)
