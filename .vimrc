@@ -81,9 +81,10 @@ function! InitExternalPlugins()
 
     let g:go_fmt_command = "goimports"
 
-    let g:ackprg = 'ag --vimgrep'
+    let g:ackprg = 'ag --vimgrep -U'
 
     let g:vim_tags_auto_generate = 1
+    let g:vim_tags_ignore_files = []
 
     let g:tagbar_type_haskell = {
                 \ 'ctagsbin'  : 'hasktags',
@@ -157,6 +158,14 @@ function! LocalConf()
     endif
 endfunc
 
+function! Spelling()
+    autocmd BufRead,BufNewFile *.md setlocal spell
+    autocmd BufRead,BufNewFile *.txt setlocal spell
+    autocmd FileType gitcommit setlocal spell
+    set complete+=kspell
+endfunc
+
+
 function! BindFileTypes()
     au BufRead,BufNewFile *.mm set filetype=cpp
     au BufRead,BufNewFile *.proto set filetype=proto
@@ -215,7 +224,6 @@ Bundle 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'eagletmt/ghcmod-vim'
 Plugin 'eagletmt/neco-ghc'
-Plugin 'rust-lang/rust.vim'
 call vundle#end()
 filetype plugin indent on
 
@@ -226,3 +234,4 @@ call InitExternalPlugins()
 call BindFileTypes()
 call BindGo()
 call InitClangFormat()
+call Spelling()
