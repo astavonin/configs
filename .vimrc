@@ -53,15 +53,20 @@ function! s:my_cr_function()
 endfunction
 
 function! InitExternalPlugins()
+    " TagBar
     let g:tagbar_left = 1
+    let g:tagbar_autofocus = 1
+
+    " UltiSnips
     let g:UltiSnipsExpandTrigger="<tab>"
     let g:UltiSnipsJumpForwardTrigger="<c-b>"
     let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
+    " NeoComplete
     let g:acp_enableAtStartup = 0
     let g:neocomplete#enable_at_startup = 1
     let g:neocomplete#enable_smart_case = 1
-    let g:neocomplete#sources#syntax#min_keyword_length = 3
+    let g:neocomplete#sources#syntax#min_keyword_length = 2
     let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
 
     if !exists('g:neocomplete#keyword_patterns')
@@ -118,6 +123,8 @@ function! InitExternalPlugins()
                 \ 'type'   : 't'
                 \ }
                 \ }
+    let g:haskellmode_completion_ghc = 1
+    autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
 endfunction
 
 function! BindKeys()
@@ -133,13 +140,12 @@ function! BindKeys()
     nmap <silent> <Leader>A :FSHere<cr>
     cnoreabbrev Ack Ack!
     nmap fd :Ack<Space>
+    nmap <f12> :Autoformat<CR>
     inoremap <expr><C-g>     neocomplete#undo_completion()
     inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
     inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
     inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
     inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-    autocmd FileType c,cpp,objc nnoremap <buffer><Leader>C :<C-u>ClangFormat<CR>
-    autocmd FileType c,cpp,objc vnoremap <buffer><Leader>C :ClangFormat<CR>
     nmap <silent> <Leader>b :Make<cr>
     nmap <silent> <Leader>T :TagsGenerate!<cr>
 endfunction
@@ -174,21 +180,6 @@ function! BindFileTypes()
     au BufRead,BufNewFile *.protoc set filetype=proto
 endfunc
 
-function! InitClangFormat()
-    let g:clang_format#style_options = {
-                \ "AlignConsecutiveAssignments" : "true",
-                \ "AlignConsecutiveDeclarations" : "true",
-                \ "AllowShortFunctionsOnASingleLine" : "false",
-                \ "SpaceBeforeParens" : "Never",
-                \ "SpacesInParentheses" : "true",
-                \ "UseTab" : "Never",
-                \ "AccessModifierOffset" : -4,
-                \ "AlwaysBreakTemplateDeclarations" : "true",
-                \ "Standard" : "C++11",
-                \ "BreakConstructorInitializersBeforeComma" : "true",
-                \ "BreakBeforeBraces" : "Allman"}
-endfunct
-
 function! AdjustWindowHeight(minheight, maxheight)
     exe max([min([line("$"), a:maxheight]), a:minheight]) . "wincmd _"
 endfunction
@@ -217,14 +208,18 @@ Bundle 'cespare/vim-toml'
 Plugin 'tpope/vim-dispatch'
 Plugin 'chrisbra/vim-diff-enhanced'
 Plugin 'davidhalter/jedi-vim'
-Plugin 'rhysd/vim-clang-format'
 Plugin 'freitass/todo.txt-vim'
 Bundle 'uarun/vim-protobuf'
 Bundle 'jiangmiao/auto-pairs'
 Bundle 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'eagletmt/ghcmod-vim'
+" cabal install ghc-mod
+" cabal install hasktags
 Plugin 'eagletmt/neco-ghc'
+Plugin 'Chiel92/vim-autoformat'
+" cabal install stylish-haskell
+" brew install clang-format
 call vundle#end()
 filetype plugin indent on
 
@@ -234,5 +229,4 @@ call BindKeys()
 call InitExternalPlugins()
 call BindFileTypes()
 call BindGo()
-call InitClangFormat()
 call Spelling()
