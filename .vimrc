@@ -38,6 +38,7 @@ function! ConfigureView()
     set cursorline
     highlight CursorLine guibg=lightblue ctermbg=lightgray
     highlight CursorLine term=none cterm=none
+    au FileType qf call AdjustWindowHeight(3, 5)
     set history=200
     set wildmenu
     set list listchars=tab:→\ ,trail:·
@@ -125,6 +126,7 @@ function! BindKeys()
     imap <C-b> <esc><esc>:BufExplorer<cr>
     nmap <C-\> :TagbarToggle<CR>
     nmap <Leader>F :NERDTreeToggle<CR>
+    nmap <Leader>f :NERDTreeFind<CR>
     nmap <Leader>t :CommandT<CR>
     cnoremap @ <c-r>=expand("%:h")<cr>/
     nmap <silent> <Leader>A :FSHere<cr>
@@ -178,7 +180,6 @@ function! InitClangFormat()
                 \ "BreakBeforeBraces" : "Allman"}
 endfunct
 
-au FileType qf call AdjustWindowHeight(3, 5)
 function! AdjustWindowHeight(minheight, maxheight)
     exe max([min([line("$"), a:maxheight]), a:minheight]) . "wincmd _"
 endfunction
@@ -215,7 +216,6 @@ Bundle 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'eagletmt/ghcmod-vim'
 Plugin 'eagletmt/neco-ghc'
-Plugin 'rust-lang/rust.vim'
 call vundle#end()
 filetype plugin indent on
 
