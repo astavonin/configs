@@ -87,7 +87,7 @@ function! InitExternalPlugins()
 
     let g:go_fmt_command = "goimports"
 
-    let g:ackprg = 'ag --vimgrep -U'
+    let g:ackprg = 'ag --vimgrep'
 
     let g:vim_tags_auto_generate = 1
     let g:vim_tags_ignore_files = []
@@ -125,6 +125,23 @@ function! InitExternalPlugins()
                 \ }
     let g:haskellmode_completion_ghc = 1
     autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+
+    let g:rustfmt_autosave = 1
+    autocmd BufRead,BufNewFile Cargo.toml,Cargo.lock,*.rs compiler cargo
+    let g:tagbar_type_rust = {
+                \ 'ctagstype' : 'rust',
+                \ 'kinds' : [
+                \'T:types,type definitions',
+                \'f:functions,function definitions',
+                \'g:enum,enumeration names',
+                \'s:structure names',
+                \'m:modules,module names',
+                \'c:consts,static constants',
+                \'t:traits,traits',
+                \'i:impls,trait implementations',
+                \]
+                \}
+    let g:cargo_makeprg_params="build"
 endfunction
 
 function! BindKeys()
@@ -146,8 +163,12 @@ function! BindKeys()
     inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
     inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
     inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-    nmap <silent> <Leader>b :Make<cr>
+    nmap <silent> <Leader>b :Dispatch<cr>
     nmap <silent> <Leader>T :TagsGenerate!<cr>
+endfunction
+
+function! BindRust()
+    au FileType rust nmap <C-]> <Plug>(rust-def)
 endfunction
 
 function! BindGo()
@@ -192,19 +213,18 @@ Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'Shougo/neocomplete.vim'
 Plugin 'Shougo/neoinclude.vim'
-Plugin 'Shougo/vimproc.vim' " VimProcInstall
+"Plugin 'Shougo/vimproc.vim' " VimProcInstall
 Plugin 'majutsushi/tagbar'
 Plugin 'jlanzarotta/bufexplorer'
 Plugin 'derekwyatt/vim-fswitch'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
-Plugin 'wincent/command-t'  " cd ~/.vim/bundle/command-t/ruby/command-t
+Plugin 'wincent/command-t'  " cd ~/.vim/bundle/command-t/ruby/command-t/ext/command-t
 " ruby extconf.rb; make
 Plugin 'szw/vim-tags'
 Plugin 'fatih/vim-go'
 Plugin 'mileszs/ack.vim' " brew install the_silver_searcher
 Plugin 'tpope/vim-fugitive'
-Bundle 'cespare/vim-toml'
 Plugin 'tpope/vim-dispatch'
 Plugin 'chrisbra/vim-diff-enhanced'
 Plugin 'davidhalter/jedi-vim'
@@ -213,9 +233,12 @@ Bundle 'uarun/vim-protobuf'
 Bundle 'jiangmiao/auto-pairs'
 Bundle 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'eagletmt/ghcmod-vim'
+Bundle 'cespare/vim-toml'
+Plugin 'rust-lang/rust.vim'
+Plugin 'racer-rust/vim-racer'
 " cabal install ghc-mod
 " cabal install hasktags
+Plugin 'eagletmt/ghcmod-vim'
 Plugin 'eagletmt/neco-ghc'
 Plugin 'Chiel92/vim-autoformat'
 " cabal install stylish-haskell
@@ -229,4 +252,5 @@ call BindKeys()
 call InitExternalPlugins()
 call BindFileTypes()
 call BindGo()
+call BindRust()
 call Spelling()
