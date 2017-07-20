@@ -235,6 +235,8 @@ Bundle 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Bundle 'cespare/vim-toml'
 Plugin 'rust-lang/rust.vim'
+" cargo install racer
+" rustup component add rust-src
 Plugin 'racer-rust/vim-racer'
 " cabal install ghc-mod
 " cabal install hasktags
