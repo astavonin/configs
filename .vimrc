@@ -1,3 +1,5 @@
+" brew install vim --with-python3 --with-luajit
+"
 function! ConfigureView()
     set shell=/bin/sh
     set number
@@ -31,8 +33,8 @@ function! ConfigureView()
     set laststatus=2
     set smartindent
     set showmatch
-    "set lines=45
-    "set columns=125
+    set lines=30
+    set columns=110
     set iskeyword=@,48-57,_,192-255
     set backspace=indent,eol,start
     set cursorline
@@ -45,6 +47,7 @@ function! ConfigureView()
     filetype plugin on
     set colorcolumn=80
     set completeopt-=preview
+    set cmdheight=1
 endfunc
 
 function! s:my_cr_function()
@@ -91,40 +94,6 @@ function! InitExternalPlugins()
 
     let g:vim_tags_auto_generate = 1
     let g:vim_tags_ignore_files = []
-
-    let g:tagbar_type_haskell = {
-                \ 'ctagsbin'  : 'hasktags',
-                \ 'ctagsargs' : '-x -c -o-',
-                \ 'kinds'     : [
-                \  'm:modules:0:1',
-                \  'd:data: 0:1',
-                \  'd_gadt: data gadt:0:1',
-                \  't:type names:0:1',
-                \  'nt:new types:0:1',
-                \  'c:classes:0:1',
-                \  'cons:constructors:1:1',
-                \  'c_gadt:constructor gadt:1:1',
-                \  'c_a:constructor accessors:1:1',
-                \  'ft:function types:1:1',
-                \  'fi:function implementations:0:1',
-                \  'o:others:0:1'
-                \ ],
-                \ 'sro'        : '.',
-                \ 'kind2scope' : {
-                \ 'm' : 'module',
-                \ 'c' : 'class',
-                \ 'd' : 'data',
-                \ 't' : 'type'
-                \ },
-                \ 'scope2kind' : {
-                \ 'module' : 'm',
-                \ 'class'  : 'c',
-                \ 'data'   : 'd',
-                \ 'type'   : 't'
-                \ }
-                \ }
-    let g:haskellmode_completion_ghc = 1
-    autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
 
     let g:rustfmt_autosave = 1
     autocmd BufRead,BufNewFile Cargo.toml,Cargo.lock,*.rs compiler cargo
@@ -213,7 +182,6 @@ Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'Shougo/neocomplete.vim'
 Plugin 'Shougo/neoinclude.vim'
-"Plugin 'Shougo/vimproc.vim' " VimProcInstall
 Plugin 'majutsushi/tagbar'
 Plugin 'jlanzarotta/bufexplorer'
 Plugin 'derekwyatt/vim-fswitch'
@@ -238,12 +206,7 @@ Plugin 'rust-lang/rust.vim'
 " cargo install racer
 " rustup component add rust-src
 Plugin 'racer-rust/vim-racer'
-" cabal install ghc-mod
-" cabal install hasktags
-Plugin 'eagletmt/ghcmod-vim'
-Plugin 'eagletmt/neco-ghc'
 Plugin 'Chiel92/vim-autoformat'
-" cabal install stylish-haskell
 " brew install clang-format
 call vundle#end()
 filetype plugin indent on
