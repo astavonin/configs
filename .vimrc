@@ -93,7 +93,8 @@ function! InitExternalPlugins()
     let g:ackprg = 'ag --vimgrep'
 
     let g:vim_tags_auto_generate = 1
-    let g:vim_tags_ignore_files = []
+    let g:vim_tags_ignore_files = ['.gitignore']
+    let g:vim_tags_ctags_binary = '/usr/local/bin/ctags'
 
     let g:rustfmt_autosave = 1
     autocmd BufRead,BufNewFile Cargo.toml,Cargo.lock,*.rs compiler cargo
@@ -136,7 +137,12 @@ function! BindKeys()
     nmap <silent> <Leader>T :TagsGenerate!<cr>
 endfunction
 
+function! BindCpp()
+    autocmd BufWrite *.cpp,*.hpp,*.c,*.h :Autoformat
+endfunction
+
 function! BindRust()
+    autocmd BufWrite *.rs,*.toml,*.lock :Autoformat
     au FileType rust nmap <C-]> <Plug>(rust-def)
 endfunction
 
@@ -217,5 +223,6 @@ call BindKeys()
 call InitExternalPlugins()
 call BindFileTypes()
 call BindGo()
+call BindCpp()
 call BindRust()
 call Spelling()
