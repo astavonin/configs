@@ -84,18 +84,18 @@ function! InitExternalPlugins()
 endfunction
 
 function! BindHaskell()
-    au FileType haskell nmap gd :call LanguageClient_textDocument_definition()<CR>
-    au FileType haskell nmap gh :call LanguageClient_textDocument_hover()<CR>
+    au FileType haskell nmap <Leader>d :call LanguageClient_textDocument_definition()<CR>
+    au FileType haskell nmap <Leader>h :call LanguageClient_textDocument_hover()<CR>
 endfunction
 
 function! BindGo()
-    au FileType go nmap <C-]> <Plug>(go-def)
-    au FileType go nmap <leader>gr <Plug>(go-run)
-    au FileType go nmap <leader>gb <Plug>(go-build)
-    au FileType go nmap <leader>gt <Plug>(go-test)
-    au FileType go nmap <leader>gc <Plug>(go-coverage)
-    au FileType go nmap <Leader>gs <Plug>(go-implements)
-    au FileType go nmap <Leader>gi <Plug>(go-info)
+    au FileType go nmap <Leader>d <Plug>(go-def)
+    au FileType go nmap <Leader>r <Plug>(go-run)<CR>
+    au FileType go nmap <leader>b <Plug>(go-build)<CR>
+    au FileType go nmap <Leader>t <Plug>(go-test)<CR>
+    au FileType go nmap <leader>c <Plug>(go-coverage)<CR>
+    au FileType go nmap <Leader>h <Plug>(go-info)<CR>
+    au FileType go nmap <Leader>i <Plug>(go-implements)<CR>
 endfunction
 
 function! BindKeys()
@@ -139,7 +139,6 @@ Plug 'autozimu/LanguageClient-neovim', {
             \ }
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
-"brew install the_silver_searcher
 Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
