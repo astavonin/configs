@@ -78,7 +78,6 @@ function! InitExternalPlugins()
                 \ 'haskell': ['hie', '--lsp'],
                 \ 'cpp': ['cquery']
                 \ }
-                "\ 'cpp': ['cquery', '--log-file=~/cquery/cq.log']
     let g:LanguageClient_loadSettings = 1
     let g:LanguageClient_settingsPath = expand('~/.config/nvim/settings.json')
 endfunction
