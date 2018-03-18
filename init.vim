@@ -47,6 +47,7 @@ function! ConfigureView()
     set colorcolumn=80
     set completeopt-=preview
     set cmdheight=1
+    let mapleader = "\\"
 endfunc
 
 
@@ -78,8 +79,20 @@ function! InitExternalPlugins()
                 \ 'haskell': ['hie', '--lsp'],
                 \ 'cpp': ['cquery']
                 \ }
+    "\ 'cpp': ['cquery', '--log-file=~/cquery/cq.log']
     let g:LanguageClient_loadSettings = 1
     let g:LanguageClient_settingsPath = expand('~/.config/nvim/settings.json')
+
+    let g:lightline = {
+                \ 'colorscheme': 'wombat',
+                \ 'active': {
+                \   'left': [ [ 'mode', 'paste' ],
+                \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+                \ },
+                \ 'component_function': {
+                \   'gitbranch': 'fugitive#head'
+                \ },
+                \ }
 endfunction
 
 function! BindHaskell()
@@ -91,7 +104,7 @@ function! BindGo()
     au FileType go nmap <Leader>d <Plug>(go-def)
     au FileType go nmap <Leader>r <Plug>(go-run)<CR>
     au FileType go nmap <leader>b <Plug>(go-build)<CR>
-    au FileType go nmap <Leader>t <Plug>(go-test)<CR>
+    au FileType go nmap <Leader>T <Plug>(go-test)<CR>
     au FileType go nmap <leader>c <Plug>(go-coverage)<CR>
     au FileType go nmap <Leader>h <Plug>(go-info)<CR>
     au FileType go nmap <Leader>i <Plug>(go-implements)<CR>
@@ -115,10 +128,17 @@ function! BindKeys()
 endfunction
 
 function! BindCpp()
-    au FileType cpp nmap gd :call LanguageClient_textDocument_definition()<CR>
-    au FileType cpp nmap gh :call LanguageClient_textDocument_hover()<CR>
+    au FileType cpp nmap <Leader>d :call LanguageClient_textDocument_definition()<CR>
+    au FileType cpp nmap <Leader>h :call LanguageClient_textDocument_hover()<CR>
     autocmd BufWrite *.cpp,*.hpp,*.c,*.h :Autoformat
 endfunction
+
+function! Spelling()
+    autocmd BufRead,BufNewFile *.md setlocal spell
+    autocmd BufRead,BufNewFile *.txt setlocal spell
+    autocmd FileType gitcommit setlocal spell
+    set complete+=kspell
+endfunc
 
 call plug#begin()
 Plug 'roxma/nvim-completion-manager'
@@ -145,6 +165,8 @@ Plug 'Chiel92/vim-autoformat'
 Plug 'neomake/neomake'
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'tpope/vim-fugitive'
+Plug 'itchyny/lightline.vim'
+Plug 'altercation/vim-colors-solarized'
 call plug#end()
 
 call BindKeys()
@@ -153,3 +175,5 @@ call BindCpp()
 call BindHaskell()
 call BindGo()
 call InitExternalPlugins()
+call Spelling()
+
