@@ -93,6 +93,9 @@ function! InitExternalPlugins()
                 \   'gitbranch': 'fugitive#head'
                 \ },
                 \ }
+    if executable('ag')
+        let g:ackprg = 'ag --vimgrep'
+    endif
 endfunction
 
 function! BindHaskell()
@@ -124,7 +127,8 @@ function! BindKeys()
     nmap <f12> :Autoformat<CR>
     nmap <silent> <Leader>b :Neomake!<cr>
     nmap <Leader>t :CtrlP<CR>
-    nmap fd :call fzf#vim#ag(expand('<cword>'))<cr>
+    cnoreabbrev Ack Ack!
+    nnoremap <Leader>a :Ack <cword><cr>
 endfunction
 
 function! BindCpp()
@@ -154,10 +158,9 @@ Plug 'nsf/gocode', {
             \ }
 Plug 'autozimu/LanguageClient-neovim', {
             \ 'branch': 'next',
-            \ 'do': './install.sh'
+            \ 'do': 'bash install.sh'
             \ }
-Plug '/usr/local/opt/fzf'
-Plug 'junegunn/fzf.vim'
+Plug 'mileszs/ack.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
