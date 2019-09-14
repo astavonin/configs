@@ -1,0 +1,15 @@
+{
+    "python.pythonPath": "python3",
+    "languageserver": {
+        "golang": {
+            "command": "gopls",
+            "rootPatterns": ["go.mod"],
+            "filetypes": ["go"]
+        },
+        "elixirLS": {
+            "command": "C:\\Users\\astavonin\\projects\\elixir-ls\\bin\\language_server.bat",
+            "filetypes": ["elixir", "eelixir"]
+
+        }
+    }
+}
