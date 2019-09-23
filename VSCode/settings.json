@@ -1,0 +1,23 @@
+{
+    "editor.fontFamily": "Hack",
+    "editor.fontSize": 18,
+    "search.location": "panel",
+    "workbench.colorTheme": "Solarized Dark",
+    "git.autofetch": true,
+
+    "customizeUI.fontSizeMap": {
+        "13px": "16px",
+        "12px": "15px",
+        "window-title": "16px", // Window title font when using custom titlebar
+        "tab-title": "12px",    // Used for editor tab titles
+        "monospace": "16px",  // Used for monospace fonts in user interface
+        "menu": "16px",         // Used for menu items (windows only)
+    },
+    "editor.acceptSuggestionOnEnter": "off",
+    "editor.rulers": [80,120],
+    "workbench.colorCustomizations": {
+        "editorCursor.foreground": "#a2b9d8"
+    },
+    "workbench.startupEditor": "newUntitledFile",
+    "aws.telemetry": "Disable"
+}
