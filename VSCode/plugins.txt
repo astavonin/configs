@@ -4,7 +4,8 @@ code --list-extensions | % { "code --install-extension $_" }
 
 Current extensions list:
 
-code --install-extension aaron-bond.better-comments                                                               code --install-extension amazonwebservices.aws-toolkit-vscode
+code --install-extension aaron-bond.better-comments
+code --install-extension amazonwebservices.aws-toolkit-vscode
 code --install-extension Atishay-Jain.All-Autocomplete
 code --install-extension betterthantomorrow.calva
 code --install-extension bokuweb.vscode-ripgrep
@@ -24,6 +25,8 @@ code --install-extension ms-vscode.cpptools
 code --install-extension ms-vscode.Go
 code --install-extension pgourlain.erlang
 code --install-extension redhat.vscode-yaml
+code --install-extension streetsidesoftware.code-spell-checker
+code --install-extension streetsidesoftware.code-spell-checker-russian
 code --install-extension tonsky.clojure-warrior
 code --install-extension Valentin.beamdasm
 code --install-extension yzhang.markdown-all-in-one
