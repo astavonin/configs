@@ -1,4 +1,5 @@
 {
+    "$schema": "https://aka.ms/terminal-profiles-schema",
     "globals" : 
     {
         "alwaysShowTabs" : true,
@@ -145,7 +146,7 @@
                 "command" : "scrollDownPage",
                 "keys" : 
                 [
-                    "ctrl+shift+pgdn"
+                    "pgdn"
                 ]
             },
             {
@@ -159,7 +160,7 @@
                 "command" : "scrollUpPage",
                 "keys" : 
                 [
-                    "ctrl+shift+pgup"
+                    "pgup"
                 ]
             },
             {
@@ -234,13 +235,13 @@
     "profiles" : 
     [
         {
-            "acrylicOpacity" : 0.5,
+            "acrylicOpacity" : 0.75,
             "closeOnExit" : true,
             "colorScheme" : "Solarized Light",
             "commandline" : "powershell.exe",
-            "cursorColor" : "#FFFFFF",
             "cursorShape" : "bar",
             "fontFace" : "Hack",
+            "cursorColor" : "#000000",
             "fontSize" : 14,
             "guid" : "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
             "historySize" : 9001,
@@ -434,6 +435,27 @@
             "red" : "#DC322F",
             "white" : "#EEE8D5",
             "yellow" : "#B58900"
+        },
+        {
+            "name" : "Dracula",
+            "background" : "#272935",
+            "black" : "#272935",
+            "blue" : "#BD93F9",
+            "brightBlack" : "#555555",
+            "brightBlue" : "#BD93F9",
+            "brightCyan" : "#8BE9FD",
+            "brightGreen" : "#50FA7B",
+            "brightPurple" : "#FF79C6",
+            "brightRed" : "#FF5555",
+            "brightWhite" : "#FFFFFF",
+            "brightYellow" : "#F1FA8C",
+            "cyan" : "#6272A4",
+            "foreground" : "#F8F8F2",
+            "green" : "#50FA7B",
+            "purple" : "#6272A4",
+            "red" : "#FF5555",
+            "white" : "#F8F8F2",
+            "yellow" : "#FFB86C"
         }
     ]
 }
