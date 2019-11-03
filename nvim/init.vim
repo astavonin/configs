@@ -55,12 +55,12 @@ function! ConfigureView()
 endfunc
 
 function! InitExternalPlugins()
+    if has('win32')
+        let g:python3_host_prog = 'C:\Python37\python.exe'
+    endif
     " TagBar
     let g:tagbar_left = 1
     let g:tagbar_autofocus = 1
-
-    " UltiSnips shouldn't break Coc bindings
-    let g:UltiSnipsExpandTrigger="<C-j>"
 
     "" Neomake
     let g:neomake_open_list = 2
@@ -68,40 +68,32 @@ function! InitExternalPlugins()
     " NERDCommenter
     let g:NERDSpaceDelims = 1
 
-    let g:go_fmt_command = "goimports"
-    let g:go_def_mapping_enabled = 0
+    let g:deoplete#enable_at_startup = 1
 
     autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h :Autoformat
 endfunction
 
-
 function! BindKeys()
-    nmap <silent> <Leader>d <Plug>(coc-definition)
-    nmap <silent> <Leader>t <Plug>(coc-type-definition)
-    nmap <silent> <Leader>i <Plug>(coc-implementation)
-    nmap <silent> <Leader>r <Plug>(coc-references)
-    nmap <leader>R <Plug>(coc-rename)
-    nnoremap <silent> <Leader>s  :<C-u>CocList -I symbols<cr>
-    nmap <silent> <Leader>[ <Plug>(coc-diagnostic-prev)
-    nmap <silent> <Leader>] <Plug>(coc-diagnostic-next)
-
     nmap <C-b> <Esc>:BufExplorer<cr>
     vmap <C-b> <esc>:BufExplorer<cr>
     imap <C-b> <esc><esc>:BufExplorer<cr>
-    " nmap <silent> <Leader>A :FSHere<cr>
+    nmap <silent> <Leader>A :FSHere<cr>
     cnoremap @ <c-r>=expand("%:h")<cr>/
     nmap <C-\> :TagbarToggle<CR>
     nmap <Leader>F :NERDTreeToggle<CR>
     nmap <Leader>f :NERDTreeFind<CR>
     nmap <f12> :Autoformat<CR>
     nmap <silent> <Leader>b :Neomake!<cr>
-    inoremap <silent><expr> <Tab>
-                \ pumvisible() ? "\<C-n>" :
-                \ <SID>check_back_space() ? "\<Tab>" :
-                \ coc#refresh()
 
-    nnoremap <silent> <Leader>a :exe 'CocList -I -A --input='.expand('<cword>').' grep'<CR>
-    nnoremap <silent> <Leader>p :exe 'CocList --input='.expand('<cword>').' files'<CR>
+    imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+    smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+    xmap <C-k>     <Plug>(neosnippet_expand_target)
+    imap <expr><TAB>
+                \ pumvisible() ? "\<C-n>" :
+                \ neosnippet#expandable_or_jumpable() ?
+                \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+    smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+                \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 endfunction
 
 function! Spelling()
@@ -110,16 +102,6 @@ function! Spelling()
     autocmd FileType gitcommit setlocal spell
     set complete+=kspell
 endfunc
-
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
-
-"imap <C-l> <Plug>(coc-snippets-expand)
-"let g:coc_snippet_next = '<c-j>'
-"let g:coc_snippet_prev = '<c-k>'
-
 
 call plug#begin()
 Plug 'NLKNguyen/papercolor-theme'
@@ -130,18 +112,22 @@ Plug 'vim-airline/vim-airline'
 Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
+Plug 'kien/ctrlp.vim'
 
 Plug 'Chiel92/vim-autoformat'
 Plug 'neomake/neomake'
 Plug 'tpope/vim-fugitive'
 
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
+Plug 'Shougo/neosnippet.vim'
+Plug 'Shougo/neosnippet-snippets'
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
+Plug 'hashivim/vim-terraform'
+Plug 'chr4/nginx.vim'
 Plug 'fatih/vim-go'
-Plug 'elixir-editors/vim-elixir'
+Plug 'bfrg/vim-cpp-modern'
+Plug 'derekwyatt/vim-fswitch'
+Plug 'ekalinin/Dockerfile.vim'
 call plug#end()
 
 call BindKeys()
