@@ -1,5 +1,5 @@
 function! ConfigureView()
-    "set shell=/bin/sh
+    " set shell=/bin/sh
     set noswapfile
     set number
     set signcolumn=yes
@@ -74,16 +74,16 @@ function! InitExternalPlugins()
 endfunction
 
 function! BindKeys()
-    nmap <C-b> <Esc>:BufExplorer<cr>
-    vmap <C-b> <esc>:BufExplorer<cr>
-    imap <C-b> <esc><esc>:BufExplorer<cr>
+    map <Leader>b <esc>:Buffers<cr>
+    map <Leader>p <esc>:Files<cr>
+    map <Leader>t <esc>:Tags<cr>
     nmap <silent> <Leader>A :FSHere<cr>
     cnoremap @ <c-r>=expand("%:h")<cr>/
     nmap <C-\> :TagbarToggle<CR>
     nmap <Leader>F :NERDTreeToggle<CR>
     nmap <Leader>f :NERDTreeFind<CR>
     nmap <f12> :Autoformat<CR>
-    nmap <silent> <Leader>b :Neomake!<cr>
+    nmap <silent> <Leader>c :Neomake!<cr>
 
     imap <C-k>     <Plug>(neosnippet_expand_or_jump)
     smap <C-k>     <Plug>(neosnippet_expand_or_jump)
@@ -106,13 +106,13 @@ endfunc
 call plug#begin()
 Plug 'NLKNguyen/papercolor-theme'
 
-Plug 'jlanzarotta/bufexplorer'
 Plug 'majutsushi/tagbar'
 Plug 'vim-airline/vim-airline'
 Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
-Plug 'kien/ctrlp.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 
 Plug 'Chiel92/vim-autoformat'
 Plug 'neomake/neomake'
@@ -121,6 +121,8 @@ Plug 'tpope/vim-fugitive'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'universal-ctags/ctags'
 
 Plug 'hashivim/vim-terraform'
 Plug 'chr4/nginx.vim'
