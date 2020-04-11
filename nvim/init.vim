@@ -71,12 +71,21 @@ function! InitExternalPlugins()
     let g:deoplete#enable_at_startup = 1
 
     autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h :Autoformat
+    let g:LanguageClient_serverCommands = { 'cpp': ['clangd-10'] }
 endfunction
 
 function! BindKeys()
+    nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+    nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+    nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+    nnoremap <silent> gi :call LanguageClient#textDocument_implementation()<CR>
+    nnoremap <silent> gr :call LanguageClient#textDocument_references()<CR>
+    nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+
     map <Leader>b <esc>:Buffers<cr>
     map <Leader>p <esc>:Files<cr>
     map <Leader>t <esc>:Tags<cr>
+    map <silent> <Leader>s :Rg <C-R><C-W><CR>
     nmap <silent> <Leader>A :FSHere<cr>
     cnoremap @ <c-r>=expand("%:h")<cr>/
     nmap <C-\> :TagbarToggle<CR>
@@ -111,7 +120,9 @@ Plug 'vim-airline/vim-airline'
 Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', {
+            \ 'dir': '~/.fzf',
+            \ 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
 Plug 'Chiel92/vim-autoformat'
@@ -123,6 +134,9 @@ Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'universal-ctags/ctags'
+Plug 'autozimu/LanguageClient-neovim', {
+            \ 'branch': 'next',
+            \ 'do': 'bash install.sh' }
 
 Plug 'hashivim/vim-terraform'
 Plug 'chr4/nginx.vim'
