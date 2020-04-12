@@ -139,6 +139,7 @@ Plug 'fatih/vim-go'
 Plug 'bfrg/vim-cpp-modern'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'ekalinin/Dockerfile.vim'
+Plug 'tpope/vim-surround'
 call plug#end()
 
 call BindKeys()
