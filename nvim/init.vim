@@ -71,16 +71,20 @@ function! InitExternalPlugins()
     let g:deoplete#enable_at_startup = 1
 
     autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h :Autoformat
-    let g:LanguageClient_serverCommands = { 'cpp': ['clangd-10'] }
+
+    let g:LanguageClient_serverCommands = { 'cpp': ['clangd-10'],
+                \ 'haskell': ['hie-wrapper', '--lsp'] }
 endfunction
 
 function! BindKeys()
     nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-    nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-    nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-    nnoremap <silent> gi :call LanguageClient#textDocument_implementation()<CR>
-    nnoremap <silent> gr :call LanguageClient#textDocument_references()<CR>
-    nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+    map <Leader>lk :call LanguageClient#textDocument_hover()<CR>
+    map <Leader>lg :call LanguageClient#textDocument_definition()<CR>
+    map <Leader>lr :call LanguageClient#textDocument_rename()<CR>
+    map <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
+    map <Leader>lb :call LanguageClient#textDocument_references()<CR>
+    map <Leader>la :call LanguageClient#textDocument_codeAction()<CR>
+    map <Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
 
     map <Leader>b <esc>:Buffers<cr>
     map <Leader>p <esc>:Files<cr>
@@ -93,16 +97,6 @@ function! BindKeys()
     nmap <Leader>f :NERDTreeFind<CR>
     nmap <f12> :Autoformat<CR>
     nmap <silent> <Leader>c :Neomake!<cr>
-
-    imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-    smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-    xmap <C-k>     <Plug>(neosnippet_expand_target)
-    imap <expr><TAB>
-                \ pumvisible() ? "\<C-n>" :
-                \ neosnippet#expandable_or_jumpable() ?
-                \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-    smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-                \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 endfunction
 
 function! Spelling()
@@ -130,8 +124,9 @@ Plug 'neomake/neomake'
 Plug 'tpope/vim-fugitive'
 
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
-Plug 'Shougo/neosnippet.vim'
-Plug 'Shougo/neosnippet-snippets'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'universal-ctags/ctags'
 Plug 'autozimu/LanguageClient-neovim', {
