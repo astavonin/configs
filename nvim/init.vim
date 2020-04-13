@@ -69,6 +69,7 @@ function! InitExternalPlugins()
     let g:NERDSpaceDelims = 1
 
     let g:deoplete#enable_at_startup = 1
+    set completeopt=menu,noinsert " auto select first element in the popup list
 
     autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h :Autoformat
 
@@ -146,3 +147,4 @@ call BindKeys()
 call ConfigureView()
 call InitExternalPlugins()
 call Spelling()
+
