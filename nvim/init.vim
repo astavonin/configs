@@ -72,7 +72,7 @@ function! InitExternalPlugins()
 
     autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h :Autoformat
 
-    let g:LanguageClient_serverCommands = { 'cpp': ['clangd-10'],
+    let g:LanguageClient_serverCommands = { 'cpp': ['clangd-10', '-header-insertion=never'],
                 \ 'haskell': ['hie-wrapper', '--lsp'] }
 endfunction
 
