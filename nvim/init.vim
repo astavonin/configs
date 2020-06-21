@@ -74,7 +74,11 @@ function! InitExternalPlugins()
     autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h :Autoformat
 
     let g:LanguageClient_serverCommands = { 'cpp': ['clangd-10', '-header-insertion=never'],
-                \ 'haskell': ['hie-wrapper', '--lsp'] }
+                \ 'haskell': ['hie-wrapper', '--lsp'],
+                \ 'go': ['gopls'] }
+
+    let g:go_def_mode='gopls'
+    let g:go_info_mode='gopls'
 endfunction
 
 function! BindKeys()
@@ -141,6 +145,7 @@ Plug 'bfrg/vim-cpp-modern'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'ekalinin/Dockerfile.vim'
 Plug 'tpope/vim-surround'
+Plug 'jceb/vim-orgmode'
 call plug#end()
 
 call BindKeys()

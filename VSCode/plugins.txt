@@ -1,13 +1,12 @@
 How to build extensions list:
 code --list-extensions | xargs -L 1 echo code --install-extension
-code --list-extensions | % { "code --install-extension $_" } 
+
 
 Current extensions list:
 
 code --install-extension aaron-bond.better-comments
 code --install-extension amazonwebservices.aws-toolkit-vscode
 code --install-extension Atishay-Jain.All-Autocomplete
-code --install-extension betterthantomorrow.calva
 code --install-extension bokuweb.vscode-ripgrep
 code --install-extension CoenraadS.bracket-pair-colorizer
 code --install-extension eamodio.gitlens
@@ -16,17 +15,14 @@ code --install-extension emilast.LogFileHighlighter
 code --install-extension Gruntfuggly.todo-tree
 code --install-extension iocave.customize-ui
 code --install-extension iocave.monkey-patch
-code --install-extension JakeBecker.elixir-ls
 code --install-extension mauve.terraform
 code --install-extension ms-azuretools.vscode-docker
 code --install-extension ms-python.python
 code --install-extension ms-vscode-remote.remote-wsl
 code --install-extension ms-vscode.cpptools
 code --install-extension ms-vscode.Go
-code --install-extension pgourlain.erlang
 code --install-extension redhat.vscode-yaml
 code --install-extension streetsidesoftware.code-spell-checker
 code --install-extension streetsidesoftware.code-spell-checker-russian
-code --install-extension tonsky.clojure-warrior
-code --install-extension Valentin.beamdasm
 code --install-extension yzhang.markdown-all-in-one
+
