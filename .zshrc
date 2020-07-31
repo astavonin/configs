@@ -68,7 +68,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git aws docker golang encode64)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -98,17 +98,18 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f $HOME/.fzf.zsh ] && source $HOME/.fzf.zsh
 
-if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-    tmux attach-session -t "dev" || 
-        tmux new-session -s "dev" \; split-window -h \; split-window -v \; attach
+[ -f $HOME/.cargo/env ] && source $HOME/.cargo/env
+
+if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]]; then
+    if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+        tmux attach-session -t "dev" || 
+            tmux new-session -s "dev" \; split-window -h \; split-window -v \; attach
+    fi
 fi
-
 export EDITOR='vim'
 
 [[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
 
 source $HOME/.zsh_local
-
-[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
