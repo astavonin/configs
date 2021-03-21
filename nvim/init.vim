@@ -32,8 +32,6 @@ function! ConfigureView()
     set laststatus=2
     set smartindent
     set showmatch
-    "set lines=30
-    "set columns=110
     set iskeyword=@,48-57,_,192-255
     set backspace=indent,eol,start
     set cursorline
@@ -55,9 +53,6 @@ function! ConfigureView()
 endfunc
 
 function! InitExternalPlugins()
-    if has('win32')
-        let g:python3_host_prog = 'C:\Python37\python.exe'
-    endif
     " TagBar
     let g:tagbar_left = 1
     let g:tagbar_autofocus = 1
@@ -68,31 +63,34 @@ function! InitExternalPlugins()
     " NERDCommenter
     let g:NERDSpaceDelims = 1
 
-    let g:deoplete#enable_at_startup = 1
-    set completeopt=menu,noinsert " auto select first element in the popup list
+    " completion-vim
+    set completeopt=menuone,noinsert,noselect
+    set shortmess+=c
+    autocmd BufEnter * lua require'completion'.on_attach()
+    let g:completion_enable_snippet = 'UltiSnips'
+    let g:completion_matching_smart_case = 1
+    let g:completion_trigger_keyword_length = 2
 
     autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h :Autoformat
 
-    let g:LanguageClient_serverCommands = { 'cpp': ['clangd-10', '-header-insertion=never'],
-                \ 'haskell': ['hie-wrapper', '--lsp'],
-                \ 'go': ['gopls'] }
-
-    let g:go_def_mode='gopls'
-    let g:go_info_mode='gopls'
-
     let g:airline#extensions#branch#displayed_head_limit = 10
     let g:airline#extensions#branch#format = 1
+
+    " vim-cpp-enhanced-highlight
+    let g:cpp_class_scope_highlight = 1
+    let g:cpp_member_variable_highlight = 1
 endfunction
 
 function! BindKeys()
-    nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-    map <Leader>lk :call LanguageClient#textDocument_hover()<CR>
-    map <Leader>lg :call LanguageClient#textDocument_definition()<CR>
-    map <Leader>lr :call LanguageClient#textDocument_rename()<CR>
-    map <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
-    map <Leader>lb :call LanguageClient#textDocument_references()<CR>
-    map <Leader>la :call LanguageClient#textDocument_codeAction()<CR>
-    map <Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
+    nnoremap <silent> gD    <cmd>lua vim.lsp.buf.definition()<CR>
+    nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
+    nnoremap <silent> gI    <cmd>lua vim.lsp.buf.implementation()<CR>
+    nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
+    nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+    nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
+    nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
+    nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+    nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
 
     map <Leader>b <esc>:Buffers<cr>
     map <Leader>p <esc>:Files<cr>
@@ -105,6 +103,9 @@ function! BindKeys()
     nmap <Leader>f :NERDTreeFind<CR>
     nmap <f12> :Autoformat<CR>
     nmap <silent> <Leader>c :Neomake!<cr>
+
+    inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 endfunction
 
 function! Spelling()
@@ -117,42 +118,49 @@ endfunc
 call plug#begin()
 Plug 'NLKNguyen/papercolor-theme'
 
+" general view, edits and navigation
 Plug 'majutsushi/tagbar'
 Plug 'vim-airline/vim-airline'
-Plug 'jiangmiao/auto-pairs'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'junegunn/fzf', {
             \ 'dir': '~/.fzf',
             \ 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'octol/vim-cpp-enhanced-highlight'
 
-Plug 'Chiel92/vim-autoformat'
-Plug 'neomake/neomake'
-Plug 'tpope/vim-fugitive'
+" LSP support
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/completion-nvim'
 
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
+" snippets
 Plug 'SirVer/ultisnips'
+Plug 'tpope/vim-fugitive'
 Plug 'honza/vim-snippets'
 
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'universal-ctags/ctags'
-Plug 'autozimu/LanguageClient-neovim', {
-            \ 'branch': 'next',
-            \ 'do': 'bash install.sh' }
-
-Plug 'hashivim/vim-terraform'
-Plug 'chr4/nginx.vim'
-Plug 'fatih/vim-go'
-Plug 'bfrg/vim-cpp-modern'
-Plug 'derekwyatt/vim-fswitch'
+" extra languages
 Plug 'ekalinin/Dockerfile.vim'
 Plug 'tpope/vim-surround'
-Plug 'jceb/vim-orgmode'
+
+" programming language toolings
+Plug 'jiangmiao/auto-pairs'
+Plug 'ludovicchabant/vim-gutentags' " generates ctags for fzf
+Plug 'neomake/neomake'
+Plug 'Chiel92/vim-autoformat'
+Plug 'fatih/vim-go'
+Plug 'derekwyatt/vim-fswitch'       " cpp <-> h file switch
 call plug#end()
 
 call BindKeys()
 call ConfigureView()
 call InitExternalPlugins()
 call Spelling()
+
+lua << EOF
+require'lspconfig'.clangd.setup{}
+require'lspconfig'.pyls.setup{}
+require'lspconfig'.hls.setup{}
+require'lspconfig'.gopls.setup{}
+require'lspconfig'.dockerls.setup{}
+EOF
 
