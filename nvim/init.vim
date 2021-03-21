@@ -79,6 +79,9 @@ function! InitExternalPlugins()
 
     let g:go_def_mode='gopls'
     let g:go_info_mode='gopls'
+
+    let g:airline#extensions#branch#displayed_head_limit = 10
+    let g:airline#extensions#branch#format = 1
 endfunction
 
 function! BindKeys()

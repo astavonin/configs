@@ -68,7 +68,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git aws docker golang encode64)
+plugins=(git aws docker golang encode64 colored-man-pages)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -98,18 +98,18 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-[ -f $HOME/.fzf.zsh ] && source $HOME/.fzf.zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-[ -f $HOME/.cargo/env ] && source $HOME/.cargo/env
-
-if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]]; then
-    if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-        tmux attach-session -t "dev" || 
-            tmux new-session -s "dev" \; split-window -h \; split-window -v \; attach
-    fi
+if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]] || [[ ! "$TERM_PROGRAM" == "vscode" ]]; then
+ if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+    tmux attach-session -t "dev" || 
+        tmux new-session -s "dev" \; split-window -h \; split-window -v \; attach
+ fi
 fi
+
+alias vim='nvim'
 export EDITOR='vim'
 
-[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
+[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "/home/aleksandr/.gvm/scripts/gvm"
 
 source $HOME/.zsh_local
