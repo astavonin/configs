@@ -73,12 +73,18 @@ function! InitExternalPlugins()
 
     autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h :Autoformat
 
+    autocmd FileType markdown,plaintex setlocal wrap
+
+
     let g:airline#extensions#branch#displayed_head_limit = 10
     let g:airline#extensions#branch#format = 1
 
     " vim-cpp-enhanced-highlight
     let g:cpp_class_scope_highlight = 1
     let g:cpp_member_variable_highlight = 1
+
+    " for vim-markdown-toc generator
+    let g:vmt_dont_insert_fence = 1
 endfunction
 
 function! BindKeys()
@@ -132,6 +138,7 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 " LSP support
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
+Plug 'dense-analysis/ale'
 
 " snippets
 Plug 'SirVer/ultisnips'
@@ -141,6 +148,9 @@ Plug 'honza/vim-snippets'
 " extra languages
 Plug 'ekalinin/Dockerfile.vim'
 Plug 'tpope/vim-surround'
+Plug 'martinda/Jenkinsfile-vim-syntax'
+Plug 'mzlogin/vim-markdown-toc'
+
 
 " programming language toolings
 Plug 'jiangmiao/auto-pairs'
