@@ -42,7 +42,7 @@ function! ConfigureView()
     set wildmenu
     set list listchars=tab:→\ ,trail:·
     filetype plugin on
-    set colorcolumn=80
+    set colorcolumn=88
     set completeopt-=preview
     set cmdheight=1
     let mapleader = "\\"
@@ -97,6 +97,7 @@ function! BindKeys()
     nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
     nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
     nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+    nnoremap <silent> ga    <cmd>lua vim.lsp.buf.code_action()<CR>
 
     map <Leader>b <esc>:Buffers<cr>
     map <Leader>p <esc>:Files<cr>
@@ -150,7 +151,8 @@ Plug 'ekalinin/Dockerfile.vim'
 Plug 'tpope/vim-surround'
 Plug 'martinda/Jenkinsfile-vim-syntax'
 Plug 'mzlogin/vim-markdown-toc'
-
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
 
 " programming language toolings
 Plug 'jiangmiao/auto-pairs'
