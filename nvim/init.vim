@@ -85,6 +85,11 @@ function! InitExternalPlugins()
 
     " for vim-markdown-toc generator
     let g:vmt_dont_insert_fence = 1
+
+    if !empty($DISABLE_ALE)
+        let g:ale_linters = {'c': []}
+        let g:ale_linters = {'cpp': []}
+    endif
 endfunction
 
 function! BindKeys()
@@ -126,7 +131,7 @@ call plug#begin()
 Plug 'NLKNguyen/papercolor-theme'
 
 " general view, edits and navigation
-Plug 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar'    " install universal (!!!) ctags
 Plug 'vim-airline/vim-airline'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
@@ -134,7 +139,7 @@ Plug 'junegunn/fzf', {
             \ 'dir': '~/.fzf',
             \ 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'tpope/vim-surround'
 
 " LSP support
 Plug 'neovim/nvim-lspconfig'
@@ -148,13 +153,13 @@ Plug 'honza/vim-snippets'
 
 " extra languages
 Plug 'ekalinin/Dockerfile.vim'
-Plug 'tpope/vim-surround'
 Plug 'martinda/Jenkinsfile-vim-syntax'
 Plug 'mzlogin/vim-markdown-toc'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 
 " programming language toolings
+Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'jiangmiao/auto-pairs'
 Plug 'ludovicchabant/vim-gutentags' " generates ctags for fzf
 Plug 'neomake/neomake'
@@ -174,5 +179,15 @@ require'lspconfig'.pyls.setup{}
 require'lspconfig'.hls.setup{}
 require'lspconfig'.gopls.setup{}
 require'lspconfig'.dockerls.setup{}
+require'lspconfig'.hls.setup{}
+local nvim_lsp = require('lspconfig')
+local servers = {
+    'clangd'
+    }
+for _, lsp in ipairs(servers) do
+    nvim_lsp[lsp].setup {
+        handlers = {['textDocument/publishDiagnostics'] = function(...) end  }
+        }
+end
 EOF
 
