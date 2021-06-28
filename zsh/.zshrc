@@ -98,18 +98,23 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+source $HOME/.zsh_local
+
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+TMUX_SPLIT=${TMUX_SPLIT:-50}
 if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]] || [[ ! "$TERM_PROGRAM" == "vscode" ]]; then
- if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-    tmux attach-session -t "dev" || 
-        tmux new-session -s "dev" \; split-window -h \; split-window -v \; attach
- fi
+    if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+        tmux attach-session -t "dev" ||
+            tmux new-session -s "dev" \; \
+                split-window -h -p $TMUX_SPLIT \; \
+                split-window -v \; \
+                selectp -t 0 \; attach
+    fi
 fi
 
 alias vim='nvim'
 export EDITOR='vim'
 
-[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "/home/aleksandr/.gvm/scripts/gvm"
+[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
 
-source $HOME/.zsh_local

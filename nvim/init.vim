@@ -63,15 +63,33 @@ function! InitExternalPlugins()
     " NERDCommenter
     let g:NERDSpaceDelims = 1
 
-    " completion-vim
-    set completeopt=menuone,noinsert,noselect
-    set shortmess+=c
-    autocmd BufEnter * lua require'completion'.on_attach()
-    let g:completion_enable_snippet = 'UltiSnips'
-    let g:completion_matching_smart_case = 1
-    let g:completion_trigger_keyword_length = 2
+    " compe
+    let g:compe = {}
+    let g:compe.enabled = v:true
+    let g:compe.autocomplete = v:true
+    let g:compe.debug = v:false
+    let g:compe.min_length = 1
+    let g:compe.preselect = 'enable'
+    let g:compe.throttle_time = 80
+    let g:compe.source_timeout = 200
+    let g:compe.resolve_timeout = 800
+    let g:compe.incomplete_delay = 400
+    let g:compe.max_abbr_width = 100
+    let g:compe.max_kind_width = 100
+    let g:compe.max_menu_width = 100
+    let g:compe.documentation = v:true
 
-    autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h :Autoformat
+    let g:compe.source = {}
+    let g:compe.source.path = v:true
+    let g:compe.source.buffer = v:true
+    let g:compe.source.calc = v:true
+    let g:compe.source.nvim_lsp = v:true
+    let g:compe.source.nvim_lua = v:true
+    let g:compe.source.ultisnips = v:true
+    let g:compe.source.luasnip = v:true
+    let g:compe.source.emoji = v:true
+
+    autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h,*.py :Autoformat
 
     autocmd FileType markdown,plaintex setlocal wrap
 
@@ -86,9 +104,16 @@ function! InitExternalPlugins()
     " for vim-markdown-toc generator
     let g:vmt_dont_insert_fence = 1
 
-    if !empty($DISABLE_ALE)
-        let g:ale_linters = {'c': []}
-        let g:ale_linters = {'cpp': []}
+    " fzf view and bindings
+    let g:fzf_preview_window = ['up:50%']
+    command! -bang -nargs=? -complete=dir Files
+                \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+    " per-folder optional configuration. Usefull for `makeprg` initialization
+    " and other small project-dependent changes. For example:
+    " set makeprg=bazel\ build\ //...
+    if filereadable(".settings/config.vim")
+        source .settings/config.vim
     endif
 endfunction
 
@@ -103,6 +128,7 @@ function! BindKeys()
     nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
     nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
     nnoremap <silent> ga    <cmd>lua vim.lsp.buf.code_action()<CR>
+    nnoremap <silent> ge    <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 
     map <Leader>b <esc>:Buffers<cr>
     map <Leader>p <esc>:Files<cr>
@@ -116,8 +142,13 @@ function! BindKeys()
     nmap <f12> :Autoformat<CR>
     nmap <silent> <Leader>c :Neomake!<cr>
 
-    inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+    " inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+    " inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+    inoremap <silent><expr> <C-Space> compe#complete()
+    inoremap <silent><expr> <CR>      compe#confirm(luaeval("require 'nvim-autopairs'.autopairs_cr()"))
+    inoremap <silent><expr> <C-e>     compe#close('<C-e>')
+    inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
+    inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
 endfunction
 
 function! Spelling()
@@ -127,6 +158,36 @@ function! Spelling()
     set complete+=kspell
 endfunc
 
+function! s:list_buffers()
+    redir => list
+    silent ls
+    redir END
+    return split(list, "\n")
+endfunction
+
+function! s:delete_buffers(lines)
+    execute 'bwipeout' join(map(a:lines, {_, line -> split(line)[0]}))
+endfunction
+
+command! BD call fzf#run(fzf#wrap({
+            \ 'source': s:list_buffers(),
+            \ 'sink*': { lines -> s:delete_buffers(lines) },
+            \ 'options': '--multi --reverse --bind ctrl-a:select-all+accept'
+            \ }))
+
+" have to install:
+" * universal (!!!) ctags: https://packages.ubuntu.com/search?keywords=universal-ctags
+" * ripgrep: https://packages.ubuntu.com/search?keywords=ripgrep
+" * bat: https://github.com/sharkdp/bat
+" * LSPs:
+"   * Bash: npm i -g bash-language-server
+"   * C++: sudo aptitude install clangd
+"   * Python (pyls): pip install 'python-language-server[all]'
+"   * Docker: npm install -g dockerfile-language-server-nodejs
+" * PlantUML:
+"   * PlantUML: sudo apt-get install -y plantuml
+"   * GraphViz: sudo apt-get install graphviz
+
 call plug#begin()
 Plug 'NLKNguyen/papercolor-theme'
 
@@ -135,16 +196,19 @@ Plug 'majutsushi/tagbar'    " install universal (!!!) ctags
 Plug 'vim-airline/vim-airline'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
-Plug 'junegunn/fzf', {
-            \ 'dir': '~/.fzf',
-            \ 'do': './install --all' }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-surround'
+Plug 'windwp/nvim-autopairs'
+" PlantUML
+Plug 'aklt/plantuml-syntax'
+Plug 'tyru/open-browser.vim'
+Plug 'weirongxu/plantuml-previewer.vim'
 
 " LSP support
 Plug 'neovim/nvim-lspconfig'
-Plug 'nvim-lua/completion-nvim'
-Plug 'dense-analysis/ale'
+Plug 'hrsh7th/nvim-compe'
+Plug 'ojroques/nvim-lspfuzzy'
 
 " snippets
 Plug 'SirVer/ultisnips'
@@ -161,7 +225,6 @@ Plug 'plasticboy/vim-markdown'
 " programming language toolings
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'jiangmiao/auto-pairs'
-Plug 'ludovicchabant/vim-gutentags' " generates ctags for fzf
 Plug 'neomake/neomake'
 Plug 'Chiel92/vim-autoformat'
 Plug 'fatih/vim-go'
@@ -173,21 +236,26 @@ call ConfigureView()
 call InitExternalPlugins()
 call Spelling()
 
+" pyls expects `~/.config/flake8` as global setup
 lua << EOF
 require'lspconfig'.clangd.setup{}
-require'lspconfig'.pyls.setup{}
+require'lspconfig'.pyls.setup{
+settings = {
+    pyls = {
+        configurationSources = { "flake8" }
+        }
+    }
+}
 require'lspconfig'.hls.setup{}
 require'lspconfig'.gopls.setup{}
+require'lspconfig'.bashls.setup{
+filetypes={"sh", "zsh"}
+}
 require'lspconfig'.dockerls.setup{}
-require'lspconfig'.hls.setup{}
-local nvim_lsp = require('lspconfig')
-local servers = {
-    'clangd'
-    }
-for _, lsp in ipairs(servers) do
-    nvim_lsp[lsp].setup {
-        handlers = {['textDocument/publishDiagnostics'] = function(...) end  }
-        }
-end
+require'lspfuzzy'.setup {}
+require'nvim-autopairs.completion.compe'.setup({
+  map_cr = true, --  map <CR> on insert mode
+  map_complete = true -- it will auto insert `(` after select function or method item
+})
 EOF
 
