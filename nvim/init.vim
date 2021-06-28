@@ -71,7 +71,7 @@ function! InitExternalPlugins()
     let g:completion_matching_smart_case = 1
     let g:completion_trigger_keyword_length = 2
 
-    autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h :Autoformat
+    autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h,*.py :Autoformat
 
     autocmd FileType markdown,plaintex setlocal wrap
 
@@ -86,9 +86,16 @@ function! InitExternalPlugins()
     " for vim-markdown-toc generator
     let g:vmt_dont_insert_fence = 1
 
-    if !empty($DISABLE_ALE)
-        let g:ale_linters = {'c': []}
-        let g:ale_linters = {'cpp': []}
+    " fzf view and bindings
+    let g:fzf_preview_window = ['up:50%']
+    command! -bang -nargs=? -complete=dir Files
+                \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+    " per-folder optional configuration. Usefull for `makeprg` initialization
+    " and other small project-dependent changes. For example:
+    " set makeprg=bazel\ build\ //...
+    if filereadable(".settings/config.vim")
+        source .settings/config.vim
     endif
 endfunction
 
@@ -103,6 +110,7 @@ function! BindKeys()
     nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
     nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
     nnoremap <silent> ga    <cmd>lua vim.lsp.buf.code_action()<CR>
+    nnoremap <silent> ge    <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
 
     map <Leader>b <esc>:Buffers<cr>
     map <Leader>p <esc>:Files<cr>
@@ -127,6 +135,19 @@ function! Spelling()
     set complete+=kspell
 endfunc
 
+" have to install:
+" * universal (!!!) ctags: https://packages.ubuntu.com/search?keywords=universal-ctags
+" * ripgrep: https://packages.ubuntu.com/search?keywords=ripgrep
+" * bat: https://github.com/sharkdp/bat
+" * LSPs:
+"   * Bash: npm i -g bash-language-server
+"   * C++: sudo aptitude install clangd
+"   * Python (pyls): pip install 'python-language-server[all]'
+"   * Docker: npm install -g dockerfile-language-server-nodejs
+" * PlantUML:
+"   * PlantUML: sudo apt-get install -y plantuml
+"   * GraphViz: sudo apt-get install graphviz
+
 call plug#begin()
 Plug 'NLKNguyen/papercolor-theme'
 
@@ -135,16 +156,17 @@ Plug 'majutsushi/tagbar'    " install universal (!!!) ctags
 Plug 'vim-airline/vim-airline'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
-Plug 'junegunn/fzf', {
-            \ 'dir': '~/.fzf',
-            \ 'do': './install --all' }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-surround'
+" PlantUML
+Plug 'aklt/plantuml-syntax'
+Plug 'tyru/open-browser.vim'
+Plug 'weirongxu/plantuml-previewer.vim'
 
 " LSP support
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
-Plug 'dense-analysis/ale'
 
 " snippets
 Plug 'SirVer/ultisnips'
@@ -161,7 +183,6 @@ Plug 'plasticboy/vim-markdown'
 " programming language toolings
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'jiangmiao/auto-pairs'
-Plug 'ludovicchabant/vim-gutentags' " generates ctags for fzf
 Plug 'neomake/neomake'
 Plug 'Chiel92/vim-autoformat'
 Plug 'fatih/vim-go'
@@ -173,21 +194,21 @@ call ConfigureView()
 call InitExternalPlugins()
 call Spelling()
 
+" pyls expects `~/.config/flake8` as global setup
 lua << EOF
 require'lspconfig'.clangd.setup{}
-require'lspconfig'.pyls.setup{}
+require'lspconfig'.pyls.setup{
+settings = {
+    pyls = {
+        configurationSources = { "flake8" }
+        }
+    }
+}
 require'lspconfig'.hls.setup{}
 require'lspconfig'.gopls.setup{}
+require'lspconfig'.bashls.setup{
+filetypes={"sh", "zsh"}
+}
 require'lspconfig'.dockerls.setup{}
-require'lspconfig'.hls.setup{}
-local nvim_lsp = require('lspconfig')
-local servers = {
-    'clangd'
-    }
-for _, lsp in ipairs(servers) do
-    nvim_lsp[lsp].setup {
-        handlers = {['textDocument/publishDiagnostics'] = function(...) end  }
-        }
-end
 EOF
 
