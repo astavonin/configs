@@ -123,13 +123,14 @@ function! BindKeys()
     nnoremap <silent> gI    <cmd>lua vim.lsp.buf.implementation()<CR>
     nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
     nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
-    nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
     nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
     nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
     nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
     nnoremap <silent> ga    <cmd>lua vim.lsp.buf.code_action()<CR>
     nnoremap <silent> ge    <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
+    nnoremap <silent> gR    <cmd>lua vim.lsp.buf.rename()<CR>
 
+    map <Leader>S <esc>:WorkspaceSymbols
     map <Leader>b <esc>:Buffers<cr>
     map <Leader>p <esc>:Files<cr>
     map <Leader>t <esc>:Tags<cr>
@@ -142,8 +143,6 @@ function! BindKeys()
     nmap <f12> :Autoformat<CR>
     nmap <silent> <Leader>c :Neomake!<cr>
 
-    " inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-    " inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
     inoremap <silent><expr> <C-Space> compe#complete()
     inoremap <silent><expr> <CR>      compe#confirm(luaeval("require 'nvim-autopairs'.autopairs_cr()"))
     inoremap <silent><expr> <C-e>     compe#close('<C-e>')
@@ -183,7 +182,7 @@ command! BD call fzf#run(fzf#wrap({
 "   * Bash: npm i -g bash-language-server
 "   * C++: sudo aptitude install clangd
 "   * Python (pyls): pip install 'python-language-server[all]'
-"   * Docker: npm install -g dockerfile-language-server-nodejs
+"   * Docker: sudo npm install -g dockerfile-language-server-nodejs
 " * PlantUML:
 "   * PlantUML: sudo apt-get install -y plantuml
 "   * GraphViz: sudo apt-get install graphviz
@@ -200,6 +199,7 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-surround'
 Plug 'windwp/nvim-autopairs'
+Plug 'octol/vim-cpp-enhanced-highlight'
 " PlantUML
 Plug 'aklt/plantuml-syntax'
 Plug 'tyru/open-browser.vim'
@@ -208,11 +208,10 @@ Plug 'weirongxu/plantuml-previewer.vim'
 " LSP support
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
-Plug 'ojroques/nvim-lspfuzzy'
+Plug 'gfanto/fzf-lsp.nvim'
 
 " snippets
 Plug 'SirVer/ultisnips'
-Plug 'tpope/vim-fugitive'
 Plug 'honza/vim-snippets'
 
 " extra languages
@@ -223,8 +222,7 @@ Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 
 " programming language toolings
-Plug 'octol/vim-cpp-enhanced-highlight'
-Plug 'jiangmiao/auto-pairs'
+Plug 'tpope/vim-fugitive'
 Plug 'neomake/neomake'
 Plug 'Chiel92/vim-autoformat'
 Plug 'fatih/vim-go'
@@ -252,10 +250,11 @@ require'lspconfig'.bashls.setup{
 filetypes={"sh", "zsh"}
 }
 require'lspconfig'.dockerls.setup{}
-require'lspfuzzy'.setup {}
+require'nvim-autopairs'.setup{}
 require'nvim-autopairs.completion.compe'.setup({
   map_cr = true, --  map <CR> on insert mode
   map_complete = true -- it will auto insert `(` after select function or method item
 })
+require'fzf_lsp'.setup()
 EOF
 
