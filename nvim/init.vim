@@ -130,24 +130,28 @@ function! BindKeys()
     nnoremap <silent> ge    <cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>
     nnoremap <silent> gR    <cmd>lua vim.lsp.buf.rename()<CR>
 
-    map <Leader>S <esc>:WorkspaceSymbols
     map <Leader>b <esc>:Buffers<cr>
     map <Leader>p <esc>:Files<cr>
     map <Leader>t <esc>:Tags<cr>
     map <silent> <Leader>s :Rg <C-R><C-W><CR>
-    nmap <silent> <Leader>A :FSHere<cr>
+    nmap <silent> <Leader>A :ClangdSwitchSourceHeader<cr>
     cnoremap @ <c-r>=expand("%:h")<cr>/
     nmap <C-\> :TagbarToggle<CR>
     nmap <Leader>F :NERDTreeToggle<CR>
     nmap <Leader>f :NERDTreeFind<CR>
     nmap <f12> :Autoformat<CR>
-    nmap <silent> <Leader>c :Neomake!<cr>
+    nmap <silent> <Leader>C :Neomake!<cr>
 
     inoremap <silent><expr> <C-Space> compe#complete()
     inoremap <silent><expr> <CR>      compe#confirm(luaeval("require 'nvim-autopairs'.autopairs_cr()"))
     inoremap <silent><expr> <C-e>     compe#close('<C-e>')
     inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
     inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+
+    " relative path  (src/foo.txt)
+    nnoremap <leader>cf :let @+=expand("%")<CR>
+    " absolute path  (/something/src/foo.txt)
+    nnoremap <leader>cF :let @+=expand("%:p")<CR>
 endfunction
 
 function! Spelling()
@@ -175,17 +179,18 @@ command! BD call fzf#run(fzf#wrap({
             \ }))
 
 " have to install:
+" * python3 -m pip install --user --upgrade pynvim
 " * universal (!!!) ctags: https://packages.ubuntu.com/search?keywords=universal-ctags
 " * ripgrep: https://packages.ubuntu.com/search?keywords=ripgrep
 " * bat: https://github.com/sharkdp/bat
 " * LSPs:
-"   * Bash: npm i -g bash-language-server
+"   * Bash: sudo npm i -g bash-language-server
 "   * C++: sudo aptitude install clangd
-"   * Python (pyls): pip install 'python-language-server[all]'
+"   * Python (pylsp): pip install 'python-lsp-server[all]'
 "   * Docker: sudo npm install -g dockerfile-language-server-nodejs
 " * PlantUML:
 "   * PlantUML: sudo apt-get install -y plantuml
-"   * GraphViz: sudo apt-get install graphviz
+"   * GraphViz: sudo apt-get install -y graphviz
 
 call plug#begin()
 Plug 'NLKNguyen/papercolor-theme'
@@ -208,7 +213,6 @@ Plug 'weirongxu/plantuml-previewer.vim'
 " LSP support
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
-Plug 'gfanto/fzf-lsp.nvim'
 
 " snippets
 Plug 'SirVer/ultisnips'
@@ -226,7 +230,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'neomake/neomake'
 Plug 'Chiel92/vim-autoformat'
 Plug 'fatih/vim-go'
-Plug 'derekwyatt/vim-fswitch'       " cpp <-> h file switch
 call plug#end()
 
 call BindKeys()
@@ -234,12 +237,13 @@ call ConfigureView()
 call InitExternalPlugins()
 call Spelling()
 
-" pyls expects `~/.config/flake8` as global setup
+
 lua << EOF
 require'lspconfig'.clangd.setup{}
-require'lspconfig'.pyls.setup{
+-- pyls expects `~/.config/flake8` as global setup
+require'lspconfig'.pylsp.setup{
 settings = {
-    pyls = {
+    pylsp = {
         configurationSources = { "flake8" }
         }
     }
@@ -252,9 +256,8 @@ filetypes={"sh", "zsh"}
 require'lspconfig'.dockerls.setup{}
 require'nvim-autopairs'.setup{}
 require'nvim-autopairs.completion.compe'.setup({
-  map_cr = true, --  map <CR> on insert mode
-  map_complete = true -- it will auto insert `(` after select function or method item
+map_cr = true, --  map <CR> on insert mode
+map_complete = true -- it will auto insert `(` after select function or method item
 })
-require'fzf_lsp'.setup()
 EOF
 
