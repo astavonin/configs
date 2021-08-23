@@ -1,0 +1,7 @@
+[user]
+	email = a.stavonin@gmail.com
+	name = Alexander Stavonin
+[push]
+	default = current
+[merge]
+	tool = bc

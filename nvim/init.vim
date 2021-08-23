@@ -179,18 +179,22 @@ command! BD call fzf#run(fzf#wrap({
             \ }))
 
 " have to install:
-" * python3 -m pip install --user --upgrade pynvim
+" * pip install --upgrade pynvim
+" * sudo apt install xclip
 " * universal (!!!) ctags: https://packages.ubuntu.com/search?keywords=universal-ctags
 " * ripgrep: https://packages.ubuntu.com/search?keywords=ripgrep
 " * bat: https://github.com/sharkdp/bat
+"   * to avoid installation error on Ubuntu:
+"   sudo apt install -o Dpkg::Options::="--force-overwrite" bat ripgrep
 " * LSPs:
 "   * Bash: sudo npm i -g bash-language-server
-"   * C++: sudo aptitude install clangd
+"   * C++: sudo aptitude install clangd-12 clang-format-12
 "   * Python (pylsp): pip install 'python-lsp-server[all]'
 "   * Docker: sudo npm install -g dockerfile-language-server-nodejs
+"   * gopls: https://github.com/golang/tools/blob/master/gopls/README.md
+"       * :GoInstallBinaries
 " * PlantUML:
-"   * PlantUML: sudo apt-get install -y plantuml
-"   * GraphViz: sudo apt-get install -y graphviz
+"   * PlantUML: sudo apt-get install -y plantuml graphviz
 
 call plug#begin()
 Plug 'NLKNguyen/papercolor-theme'
@@ -248,7 +252,6 @@ settings = {
         }
     }
 }
-require'lspconfig'.hls.setup{}
 require'lspconfig'.gopls.setup{}
 require'lspconfig'.bashls.setup{
 filetypes={"sh", "zsh"}
