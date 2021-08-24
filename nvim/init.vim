@@ -49,7 +49,7 @@ function! ConfigureView()
 
     set t_Co=256
     set background=light
-    colorscheme PaperColor
+    colorscheme nord
 endfunc
 
 function! InitExternalPlugins()
@@ -197,7 +197,7 @@ command! BD call fzf#run(fzf#wrap({
 "   * PlantUML: sudo apt-get install -y plantuml graphviz
 
 call plug#begin()
-Plug 'NLKNguyen/papercolor-theme'
+Plug 'arcticicestudio/nord-vim'
 
 " general view, edits and navigation
 Plug 'majutsushi/tagbar'    " install universal (!!!) ctags
