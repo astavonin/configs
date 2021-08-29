@@ -1,5 +1,5 @@
 ---
-Checks:          '*,-llvm-*,-google-readability-*,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-android-*'
+Checks:          '*,-llvm-*,-google-readability-*,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-android-*,-fuchsia-*,-llvmlibc-*'
 WarningsAsErrors: '*'
 HeaderFilterRegex: '*/build/*'
 AnalyzeTemporaryDtors: false
