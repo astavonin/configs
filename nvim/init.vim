@@ -193,6 +193,7 @@ command! BD call fzf#run(fzf#wrap({
 "   * Docker: sudo npm install -g dockerfile-language-server-nodejs
 "   * gopls: https://github.com/golang/tools/blob/master/gopls/README.md
 "       * :GoInstallBinaries
+"   * elixir-ls: https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#elixirls
 " * PlantUML:
 "   * PlantUML: sudo apt-get install -y plantuml graphviz
 
@@ -234,6 +235,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'neomake/neomake'
 Plug 'Chiel92/vim-autoformat'
 Plug 'fatih/vim-go'
+Plug 'elixir-editors/vim-elixir'
 call plug#end()
 
 call BindKeys()
@@ -262,5 +264,8 @@ require'nvim-autopairs.completion.compe'.setup({
 map_cr = true, --  map <CR> on insert mode
 map_complete = true -- it will auto insert `(` after select function or method item
 })
+require'lspconfig'.elixirls.setup{
+    cmd = { vim.fn.expand("$HOME/.local/share/elixir-ls/language_server.sh") }
+}
 EOF
 
