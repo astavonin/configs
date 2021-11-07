@@ -43,7 +43,7 @@ function! ConfigureView()
     set list listchars=tab:→\ ,trail:·
     filetype plugin on
     set colorcolumn=88
-    set completeopt-=preview
+    set completeopt=menu,menuone,noselect
     set cmdheight=1
     let mapleader = "\\"
 
@@ -62,32 +62,6 @@ function! InitExternalPlugins()
 
     " NERDCommenter
     let g:NERDSpaceDelims = 1
-
-    " compe
-    let g:compe = {}
-    let g:compe.enabled = v:true
-    let g:compe.autocomplete = v:true
-    let g:compe.debug = v:false
-    let g:compe.min_length = 1
-    let g:compe.preselect = 'enable'
-    let g:compe.throttle_time = 80
-    let g:compe.source_timeout = 200
-    let g:compe.resolve_timeout = 800
-    let g:compe.incomplete_delay = 400
-    let g:compe.max_abbr_width = 100
-    let g:compe.max_kind_width = 100
-    let g:compe.max_menu_width = 100
-    let g:compe.documentation = v:true
-
-    let g:compe.source = {}
-    let g:compe.source.path = v:true
-    let g:compe.source.buffer = v:true
-    let g:compe.source.calc = v:true
-    let g:compe.source.nvim_lsp = v:true
-    let g:compe.source.nvim_lua = v:true
-    let g:compe.source.ultisnips = v:true
-    let g:compe.source.luasnip = v:true
-    let g:compe.source.emoji = v:true
 
     autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h,*.py :Autoformat
 
@@ -142,11 +116,16 @@ function! BindKeys()
     nmap <f12> :Autoformat<CR>
     nmap <silent> <Leader>C :Neomake!<cr>
 
-    inoremap <silent><expr> <C-Space> compe#complete()
-    inoremap <silent><expr> <CR>      compe#confirm(luaeval("require 'nvim-autopairs'.autopairs_cr()"))
-    inoremap <silent><expr> <C-e>     compe#close('<C-e>')
-    inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
-    inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+
+    " vim-vsnip
+    imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+    smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+    imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+    smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+    imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+    smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+    imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+    smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
     " relative path  (src/foo.txt)
     nnoremap <leader>cf :let @+=expand("%")<CR>
@@ -198,44 +177,48 @@ command! BD call fzf#run(fzf#wrap({
 "   * PlantUML: sudo apt-get install -y plantuml graphviz
 
 call plug#begin()
-Plug 'arcticicestudio/nord-vim'
+    Plug 'arcticicestudio/nord-vim'
 
-" general view, edits and navigation
-Plug 'majutsushi/tagbar'    " install universal (!!!) ctags
-Plug 'vim-airline/vim-airline'
-Plug 'scrooloose/nerdcommenter'
-Plug 'scrooloose/nerdtree'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'tpope/vim-surround'
-Plug 'windwp/nvim-autopairs'
-Plug 'octol/vim-cpp-enhanced-highlight'
-" PlantUML
-Plug 'aklt/plantuml-syntax'
-Plug 'tyru/open-browser.vim'
-Plug 'weirongxu/plantuml-previewer.vim'
+    " general view, edits and navigation
+    Plug 'majutsushi/tagbar'    " install universal (!!!) ctags
+    Plug 'vim-airline/vim-airline'
+    Plug 'scrooloose/nerdcommenter'
+    Plug 'scrooloose/nerdtree'
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
+    Plug 'tpope/vim-surround'
+    Plug 'windwp/nvim-autopairs'
+    Plug 'octol/vim-cpp-enhanced-highlight'
+    " PlantUML
+    Plug 'aklt/plantuml-syntax'
+    Plug 'tyru/open-browser.vim'
+    Plug 'weirongxu/plantuml-previewer.vim'
 
-" LSP support
-Plug 'neovim/nvim-lspconfig'
-Plug 'hrsh7th/nvim-compe'
+    " LSP support
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'hrsh7th/cmp-buffer'
+    Plug 'hrsh7th/cmp-path'
+    Plug 'hrsh7th/cmp-cmdline'
+    Plug 'hrsh7th/nvim-cmp'
 
-" snippets
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+    " snippets
+    Plug 'hrsh7th/cmp-vsnip'
+    Plug 'hrsh7th/vim-vsnip'
 
-" extra languages
-Plug 'ekalinin/Dockerfile.vim'
-Plug 'martinda/Jenkinsfile-vim-syntax'
-Plug 'mzlogin/vim-markdown-toc'
-Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
+    " extra languages
+    Plug 'ekalinin/Dockerfile.vim'
+    Plug 'martinda/Jenkinsfile-vim-syntax'
+    Plug 'mzlogin/vim-markdown-toc'
+    Plug 'godlygeek/tabular'
+    Plug 'plasticboy/vim-markdown'
 
-" programming language toolings
-Plug 'tpope/vim-fugitive'
-Plug 'neomake/neomake'
-Plug 'Chiel92/vim-autoformat'
-Plug 'fatih/vim-go'
-Plug 'elixir-editors/vim-elixir'
+    " programming language toolings
+    Plug 'tpope/vim-fugitive'
+    Plug 'neomake/neomake'
+    Plug 'Chiel92/vim-autoformat'
+    Plug 'fatih/vim-go'
+    Plug 'elixir-editors/vim-elixir'
 call plug#end()
 
 call BindKeys()
@@ -245,27 +228,80 @@ call Spelling()
 
 
 lua << EOF
-require'lspconfig'.clangd.setup{}
--- pyls expects `~/.config/flake8` as global setup
-require'lspconfig'.pylsp.setup{
-settings = {
-    pylsp = {
-        configurationSources = { "flake8" }
-        }
-    }
-}
-require'lspconfig'.gopls.setup{}
-require'lspconfig'.bashls.setup{
-filetypes={"sh", "zsh"}
-}
-require'lspconfig'.dockerls.setup{}
-require'nvim-autopairs'.setup{}
-require'nvim-autopairs.completion.compe'.setup({
-map_cr = true, --  map <CR> on insert mode
-map_complete = true -- it will auto insert `(` after select function or method item
+local cmp = require'cmp'
+cmp.setup({
+    snippet = {
+        expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body)
+    end,
+    },
+    mapping = {
+        ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+        ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+        ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+        ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+        ['<C-e>'] = cmp.mapping({
+        i = cmp.mapping.abort(),
+        c = cmp.mapping.close(),
+        }),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    },
+    sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'vsnip' },
+    }, {
+    { name = 'buffer' },
+    })
 })
-require'lspconfig'.elixirls.setup{
-    cmd = { vim.fn.expand("$HOME/.local/share/elixir-ls/language_server.sh") }
+
+  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline('/', {
+      sources = {
+          { name = 'buffer' }
+          }
+      })
+
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+      sources = cmp.config.sources({
+      { name = 'path' }
+      }, {
+      { name = 'cmdline' }
+      })
+  })
+
+  -- Setup lspconfig.
+  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+  require'lspconfig'.clangd.setup{
+    capabilities = capabilities
+  }
+  -- pyls expects `~/.config/flake8` as global setup
+  require'lspconfig'.pylsp.setup{
+  settings = {
+      pylsp = {
+          configurationSources = { "flake8" }
+          }
+      },
+    capabilities = capabilities
+  }
+require'lspconfig'.gopls.setup{
+    capabilities = capabilities
 }
+require'lspconfig'.bashls.setup{
+    filetypes={"sh", "zsh"},
+    capabilities = capabilities
+}
+require'lspconfig'.dockerls.setup{
+    capabilities = capabilities
+}
+require'nvim-autopairs'.setup{
+    capabilities = capabilities
+}
+require'lspconfig'.elixirls.setup{
+    cmd = { vim.fn.expand("$HOME/.local/share/elixir-ls/language_server.sh") },
+    capabilities = capabilities
+}
+
 EOF
 
