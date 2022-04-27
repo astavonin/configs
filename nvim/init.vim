@@ -279,6 +279,7 @@ require'lspconfig'.clangd.setup{
         "clangd",
         "--background-index",
         "-j=12",
+        "--query-driver=/usr/local/x86_64-av-linux-gnu-10.2.0/bin/av-gcc",
     },
     capabilities = capabilities
 }
@@ -314,6 +315,8 @@ defaults = {
     },
   pickers = {
     buffers = {
+      ignore_current_buffer = true,
+      sort_lastused = true,
       mappings = {
         i = {
           ["<c-d>"] = actions.delete_buffer,
