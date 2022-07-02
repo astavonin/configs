@@ -68,7 +68,7 @@ function! InitExternalPlugins()
     " NERDCommenter
     let g:NERDSpaceDelims = 1
 
-    autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h,*.py :Autoformat
+    autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h,*.py,*el :Autoformat
 
     autocmd FileType markdown,plaintex setlocal wrap
 
@@ -92,8 +92,8 @@ function! InitExternalPlugins()
 endfunction
 
 function! BindKeys()
-    nnoremap <silent> gD    :lua require('telescope.builtin').lsp_definitions()<CR>
-    nnoremap <silent> gd    <cmd>lua vim.lsp.buf.declaration()<CR>
+    nnoremap <silent> gd    :lua require('telescope.builtin').lsp_definitions()<CR>
+    nnoremap <silent> gD    <cmd>lua vim.lsp.buf.declaration()<CR>
     nnoremap <silent> gI    :lua require('telescope.builtin').lsp_implementations()<CR>
     nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
     nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
@@ -279,7 +279,6 @@ require'lspconfig'.clangd.setup{
         "clangd",
         "--background-index",
         "-j=12",
-        "--query-driver=/usr/local/x86_64-av-linux-gnu-10.2.0/bin/av-gcc",
     },
     capabilities = capabilities
 }
@@ -292,6 +291,11 @@ require'lspconfig'.pylsp.setup{
     },
     capabilities = capabilities
 }
+
+require'lspconfig'.elixirls.setup{
+    cmd = { os.getenv( "HOME" ) .. "/.config/elixir-ls/language_server.sh" };
+}
+
 require'lspconfig'.gopls.setup{
     capabilities = capabilities
 }
@@ -328,7 +332,7 @@ defaults = {
 
 require'nvim-treesitter.configs'.setup {
     -- A list of parser names, or "all"
-    ensure_installed = { "c", "cpp", "python", "go", "bash", "scala", "java", "json" },
+    ensure_installed = { "c", "cpp", "python", "go", "bash", "java", "json", "elixir", "erlang" },
     highlight = {
         -- `false` will disable the whole extension
         enable = true,
