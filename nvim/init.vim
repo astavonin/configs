@@ -72,6 +72,8 @@ function! InitExternalPlugins()
 
     autocmd FileType markdown,plaintex setlocal wrap
 
+    let g:formatters_python=['black']
+    let g:formatdef_buildifier='"buildifier -lint=fix"'
 
     let g:airline#extensions#branch#displayed_head_limit = 10
     let g:airline#extensions#branch#format = 1
@@ -100,7 +102,7 @@ function! BindKeys()
     nnoremap <silent> gr    :lua require('telescope.builtin').lsp_references()<CR>
     nnoremap <silent> g0    :lua require('telescope.builtin').document_symbols()<CR>
     nnoremap <silent> gW    :lua require('telescope.builtin').workspace_symbols()<CR>
-    nnoremap <silent> ga    :lua require('telescope.builtin').lsp_code_actions()<CR>
+    nnoremap <silent> ga    :lua vim.lsp.buf.code_action()<CR>
     nnoremap <silent> ge    :lua vim.diagnostic.open_float()<CR>
     nnoremap <silent> gR    <cmd>lua vim.lsp.buf.rename()<CR>
 
@@ -173,6 +175,7 @@ call plug#begin()
 
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim'
+    Plug 'nvim-telescope/telescope-ui-select.nvim'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
     " PlantUML
@@ -329,6 +332,7 @@ defaults = {
     }
   }
 }
+require('telescope').load_extension 'ui-select'
 
 require'nvim-treesitter.configs'.setup {
     -- A list of parser names, or "all"
