@@ -68,7 +68,7 @@ function! InitExternalPlugins()
     " NERDCommenter
     let g:NERDSpaceDelims = 1
 
-    autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.h,*.py,*el :Autoformat
+    autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.cc,*.h,*.py,*el :Autoformat
 
     autocmd FileType markdown,plaintex setlocal wrap
 
@@ -209,6 +209,7 @@ call plug#begin()
     Plug 'Chiel92/vim-autoformat'
     Plug 'fatih/vim-go'
     Plug 'elixir-editors/vim-elixir'
+    Plug'dijkstracula/vim-plang'
 call plug#end()
 
 call BindKeys()
@@ -275,13 +276,14 @@ cmp.setup.cmdline(':', {
 })
 
 -- Setup lspconfig.
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 require'lspconfig'.clangd.setup{
     cmd = {
         "clangd",
         "--background-index",
         "-j=12",
+        "--query-driver=**",
     },
     capabilities = capabilities
 }
