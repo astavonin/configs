@@ -115,8 +115,8 @@ function! BindKeys()
     nmap <silent> <Leader>A :ClangdSwitchSourceHeader<cr>
     cnoremap @ <c-r>=expand("%:h")<cr>/
     nmap <C-\> :TagbarToggle<CR>
-    nmap <Leader>F :NERDTreeToggle<CR>
-    nmap <Leader>f :NERDTreeFind<CR>
+    nmap <Leader>F :NvimTreeToggle<CR>
+    nmap <Leader>f :NvimTreeFindFile<CR>
     nmap <f12> :Autoformat<CR>
     nmap <silent> <Leader>C :Neomake!<cr>
 
@@ -168,10 +168,11 @@ call plug#begin()
     Plug 'majutsushi/tagbar'    " install universal (!!!) ctags
     Plug 'vim-airline/vim-airline'
     Plug 'scrooloose/nerdcommenter'
-    Plug 'scrooloose/nerdtree'
-    Plug 'tpope/vim-surround'
     Plug 'windwp/nvim-autopairs'
     Plug 'octol/vim-cpp-enhanced-highlight'
+    Plug 'nvim-tree/nvim-web-devicons'
+    Plug 'nvim-tree/nvim-tree.lua'
+    Plug 'machakann/vim-sandwich'
 
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim'
@@ -206,7 +207,7 @@ call plug#begin()
     " programming language toolings
     Plug 'tpope/vim-fugitive'
     Plug 'neomake/neomake'
-    Plug 'Chiel92/vim-autoformat'
+    Plug 'sbdchd/neoformat'
     Plug 'fatih/vim-go'
     Plug 'elixir-editors/vim-elixir'
     Plug'dijkstracula/vim-plang'
@@ -344,5 +345,30 @@ require'nvim-treesitter.configs'.setup {
         enable = true,
         },
     }
+
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+require("nvim-tree").setup({
+  sort_by = "case_sensitive",
+  view = {
+    adaptive_size = false,
+    mappings = {
+      list = {
+        { key = "u", action = "dir_up" },
+      },
+    },
+  },
+  renderer = {
+    group_empty = true,
+  },
+  filters = {
+    dotfiles = false,
+  },
+  git = {
+    enable = true,
+    ignore = false,
+  },
+})
 
 EOF
