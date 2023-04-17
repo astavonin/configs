@@ -1,7 +1,13 @@
-[user]
-	email = a.stavonin@gmail.com
-	name = Alexander Stavonin
 [push]
 	default = current
+[user]
+	email = alex@sysdev.me
+	name = Alexander Stavonin
+[diff]
+	tool = bc
 [merge]
 	tool = bc
+[mergetool "bc"]
+	trustExitCode = true
+[alias]
+	lgb = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset%n' --abbrev-commit --date=relative --branches

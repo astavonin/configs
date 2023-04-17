@@ -104,7 +104,7 @@ source $HOME/.zsh_local
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-TMUX_SPLIT=${TMUX_SPLIT:-30}
+TMUX_SPLIT=${TMUX_SPLIT:-40}
 if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]] || [[ ! "$TERM_PROGRAM" == "vscode" ]]; then
     if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
         tmux attach-session -t "dev" ||
@@ -116,4 +116,5 @@ if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]] || [[ ! "$TERM_PROGRAM" == "vsco
 fi
 
 alias vim='nvim'
+alias ll='ls -ahl'
 export EDITOR='vim'
