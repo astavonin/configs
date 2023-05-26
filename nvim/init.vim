@@ -208,7 +208,7 @@ call plug#begin()
     Plug 'sbdchd/neoformat'
     Plug 'fatih/vim-go'
     Plug 'elixir-editors/vim-elixir'
-    Plug'dijkstracula/vim-plang'
+    Plug 'dijkstracula/vim-plang'
 call plug#end()
 
 call BindKeys()
