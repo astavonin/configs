@@ -68,12 +68,10 @@ function! InitExternalPlugins()
     " NERDCommenter
     let g:NERDSpaceDelims = 1
 
-    autocmd BufWrite *.go,*.cpp,*.hpp,*.c,*.cc,*.h,*.py,*el :Autoformat
+    autocmd BufWritePre *.go,*.cpp,*.hpp,*.c,*.cc,*.h,*.py,*el,BUILD silent! :Neoformat
+    let g:neoformat_enabled_python = ['isort', 'black']
 
     autocmd FileType markdown,plaintex setlocal wrap
-
-    let g:formatters_python=['black']
-    let g:formatdef_buildifier='"buildifier -lint=fix"'
 
     let g:airline#extensions#branch#displayed_head_limit = 10
     let g:airline#extensions#branch#format = 1
@@ -117,7 +115,7 @@ function! BindKeys()
     nmap <C-\> :TagbarToggle<CR>
     nmap <Leader>F :NvimTreeToggle<CR>
     nmap <Leader>f :NvimTreeFindFile<CR>
-    nmap <f12> :Autoformat<CR>
+    nmap <f12> :Neoformat<CR>
     nmap <silent> <Leader>C :Neomake!<cr>
 
 
@@ -350,14 +348,10 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 require("nvim-tree").setup({
+  on_attach = on_attach,
   sort_by = "case_sensitive",
   view = {
     adaptive_size = false,
-    mappings = {
-      list = {
-        { key = "u", action = "dir_up" },
-      },
-    },
   },
   renderer = {
     group_empty = true,
