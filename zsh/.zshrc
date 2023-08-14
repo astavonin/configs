@@ -102,7 +102,7 @@ source $ZSH/oh-my-zsh.sh
 
 source $HOME/.zsh_local
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh && source /usr/share/doc/fzf/examples/key-bindings.zsh
 
 TMUX_SPLIT=${TMUX_SPLIT:-40}
 if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]] || [[ ! "$TERM_PROGRAM" == "vscode" ]]; then
