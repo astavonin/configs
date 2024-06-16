@@ -102,14 +102,14 @@ source $ZSH/oh-my-zsh.sh
 
 source $HOME/.zsh_local
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh && source /usr/share/doc/fzf/examples/key-bindings.zsh
+eval "$(fzf --zsh)"
 
 TMUX_SPLIT=${TMUX_SPLIT:-40}
 if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]] || [[ ! "$TERM_PROGRAM" == "vscode" ]]; then
     if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
         tmux attach-session -t "dev" ||
             tmux new-session -s "dev" \; \
-                split-window -h -p $TMUX_SPLIT \; \
+                split-window -h -l 40% \; \
                 split-window -v \; \
                 selectp -t 0 \; attach
     fi

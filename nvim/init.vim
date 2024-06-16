@@ -47,7 +47,7 @@ function! ConfigureView()
     set cmdheight=1
     let mapleader = "\\"
 
-    set t_Co=256
+    set notermguicolors
     set background=light
     colorscheme nord
 
