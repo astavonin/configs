@@ -1,12 +1,26 @@
-AlignConsecutiveAssignments : true
-AlignConsecutiveDeclarations : true
-AllowShortFunctionsOnASingleLine : false
-SpaceBeforeParens : Never
-SpacesInParentheses : true
-UseTab : Never
 AccessModifierOffset : -4
+AlignArrayOfStructures: Right
+AlignConsecutiveAssignments : Consecutive
+AlignConsecutiveDeclarations : Consecutive
+AlignConsecutiveMacros: Consecutive
+AlignOperands: Align
+AlignTrailingComments: Always
+AllowShortBlocksOnASingleLine: Always
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortLambdasOnASingleLine: All
+BreakBeforeBraces: Linux
+BreakBeforeBinaryOperators: All
+BreakInheritanceList: BeforeComma
+FixNamespaceComments: true
+IncludeBlocks: Regroup
+IndentAccessModifiers: false
 IndentWidth: 4
-AlwaysBreakTemplateDeclarations : true
-Standard : Cpp11
-BreakConstructorInitializersBeforeComma : true
-BreakBeforeBraces : Allman
+InsertBraces: true
+InsertNewlineAtEOF: true
+NamespaceIndentation: None
+PackConstructorInitializers: Never
+SortUsingDeclarations: LexicographicNumeric
+Standard: Latest
+UseTab: Never
+
