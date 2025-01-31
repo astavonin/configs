@@ -68,7 +68,7 @@ function! InitExternalPlugins()
     " NERDCommenter
     let g:NERDSpaceDelims = 1
 
-    autocmd BufWritePre *.go,*.cpp,*.hpp,*.c,*.cc,*.h,*.py,*el,BUILD silent! :Neoformat
+    autocmd BufWritePre *.go,*.cpp,*.hpp,*.c,*.cc,*.h,*.py,*el,*.rs,BUILD silent! :Neoformat
     let g:neoformat_enabled_python = ['isort', 'black']
 
     autocmd FileType markdown,plaintex setlocal wrap
@@ -167,7 +167,6 @@ call plug#begin()
     Plug 'vim-airline/vim-airline'
     Plug 'scrooloose/nerdcommenter'
     Plug 'windwp/nvim-autopairs'
-    Plug 'octol/vim-cpp-enhanced-highlight'
     Plug 'nvim-tree/nvim-web-devicons'
     Plug 'nvim-tree/nvim-tree.lua'
     Plug 'machakann/vim-sandwich'
@@ -303,14 +302,39 @@ require'lspconfig'.elixirls.setup{
 require'lspconfig'.gopls.setup{
     capabilities = capabilities
 }
+
 require'lspconfig'.bashls.setup{
     filetypes={"sh", "zsh"},
     capabilities = capabilities
 }
+
 require'lspconfig'.dockerls.setup{
     capabilities = capabilities
 }
+
 require'nvim-autopairs'.setup{
+    capabilities = capabilities
+}
+
+require'lspconfig'.rust_analyzer.setup{
+    settings = {
+        ['rust-analyzer'] = {
+            imports = {
+                granularity = {
+                    group = "module",
+                },
+                prefix = "self",
+            },
+            cargo = {
+                buildScripts = {
+                    enable = true,
+                },
+            },
+            procMacro = {
+                enable = true
+            },
+        }
+    },
     capabilities = capabilities
 }
 
@@ -337,9 +361,12 @@ require('telescope').load_extension 'ui-select'
 
 require'nvim-treesitter.configs'.setup {
     -- A list of parser names, or "all"
-    ensure_installed = { "c", "cpp", "python", "go", "bash", "java", "json", "elixir", "erlang" },
+    ensure_installed = { "c", "cpp", "python", "go", "bash", "java", "json", "elixir",
+                        "erlang", "rust", "lua", "vim", "vimdoc", "query", "markdown",
+                        "markdown_inline", "cmake", "proto" },
+    auto_install = true,
+    sync_install = false,
     highlight = {
-        -- `false` will disable the whole extension
         enable = true,
         },
     }
