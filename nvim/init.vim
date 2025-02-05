@@ -300,7 +300,16 @@ require'lspconfig'.elixirls.setup{
 }
 
 require'lspconfig'.gopls.setup{
-    capabilities = capabilities
+    capabilities = capabilities,
+    cmd = {"gopls"},
+    filetypes = { "go", "gomod", "gowork", "gotmpl" },
+    settings = {
+        gopls = {
+            completeUnimported = true,
+            usePlaceholders = true,
+            staticcheck = true,
+        },
+    },
 }
 
 require'lspconfig'.bashls.setup{
