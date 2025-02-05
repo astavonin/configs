@@ -117,6 +117,10 @@ if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]] || [[ ! "$TERM_PROGRAM" == "vsco
     fi
 fi
 
+if [[ $(uname) == "Darwin" ]]; then
+    export HOMEBREW_AUTO_UPDATE_SECS=3600
+fi
+
 alias vim='nvim'
 alias ll='ls -ahl'
 export EDITOR='vim'
