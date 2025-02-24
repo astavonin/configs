@@ -124,3 +124,10 @@ fi
 alias vim='nvim'
 alias ll='ls -ahl'
 export EDITOR='vim'
+
+fpath=($fpath ~/.zsh/completion)
+fpath=($fpath ~/.docker/completions)
+autoload -Uz compinit
+compinit
+
+complete -C '/usr/local/bin/aws_completer' aws
