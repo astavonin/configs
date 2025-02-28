@@ -123,7 +123,7 @@ fi
 
 alias vim='nvim'
 alias ll='ls -ahl'
-export EDITOR='vim'
+export EDITOR='nvim'
 
 fpath=($fpath ~/.zsh/completion)
 fpath=($fpath ~/.docker/completions)
