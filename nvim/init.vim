@@ -7,7 +7,6 @@ function! ConfigureView()
     set hlsearch
     set ignorecase
     set smartcase
-    set termencoding=utf8
     set nocompatible
     set ruler
     set showcmd
@@ -208,6 +207,10 @@ call plug#begin()
     Plug 'fatih/vim-go'
     Plug 'elixir-editors/vim-elixir'
     Plug 'dijkstracula/vim-plang'
+    Plug 'fredrikaverpil/godoc.nvim'
+    Plug 'folke/snacks.nvim'
+    Plug 'echasnovski/mini.pick'
+    Plug 'ibhagwan/fzf-lua'
 call plug#end()
 
 call BindKeys()
@@ -368,11 +371,11 @@ defaults = {
 }
 require('telescope').load_extension 'ui-select'
 
-require'nvim-treesitter.configs'.setup {
+require('nvim-treesitter.configs').setup {
     -- A list of parser names, or "all"
     ensure_installed = { "c", "cpp", "python", "go", "bash", "java", "json", "elixir",
                         "erlang", "rust", "lua", "vim", "vimdoc", "query", "markdown",
-                        "markdown_inline", "cmake", "proto" },
+                        "markdown_inline", "cmake", "proto", "yaml" },
     auto_install = true,
     sync_install = false,
     highlight = {
@@ -399,6 +402,12 @@ require("nvim-tree").setup({
     enable = true,
     ignore = false,
   },
+})
+
+require('godoc').setup({
+    picker = {
+        type = "telescope", -- native (vim.ui.select) | telescope | snacks | mini | fzf_lua
+    },
 })
 
 EOF
