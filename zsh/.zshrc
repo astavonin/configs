@@ -72,7 +72,19 @@ ZSH_THEME="robbyrussell"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git aws docker golang encode64 colored-man-pages)
 
-FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+# Determine FPATH based on platform
+if command -v brew >/dev/null 2>&1; then
+    # macOS or Linuxbrew on Ubuntu
+    brew_prefix="$(brew --prefix)"
+    if [ -d "$brew_prefix/share/zsh/site-functions" ]; then
+        FPATH="$brew_prefix/share/zsh/site-functions:$FPATH"
+    fi
+else
+    # Ubuntu default Zsh function directory
+    if [ -d "/usr/share/zsh/functions" ]; then
+        FPATH="/usr/share/zsh/functions:$FPATH"
+    fi
+fi
 
 source $ZSH/oh-my-zsh.sh
 
@@ -102,9 +114,13 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+ export PATH="$HOME/go/bin:$HOME/.local/bin:$PATH"
+
 source $HOME/.zsh_local
 
 eval "$(fzf --zsh)"
+
+source $HOME/.cargo/env
 
 TMUX_SPLIT=${TMUX_SPLIT:-40}
 if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]] || [[ ! "$TERM_PROGRAM" == "vscode" ]]; then
@@ -131,3 +147,5 @@ autoload -Uz compinit
 compinit
 
 complete -C '/usr/local/bin/aws_completer' aws
+
+

@@ -151,6 +151,7 @@ endfunc
 "   * Bash: sudo npm i -g bash-language-server
 "   * C++: sudo aptitude install clangd-12 clang-format-12
 "   * Python (pylsp): pip install 'python-lsp-server[all]'
+"       * OR: sudo apt-get install python3-pylsp
 "   * Docker: sudo npm install -g dockerfile-language-server-nodejs
 "   * gopls: https://github.com/golang/tools/blob/master/gopls/README.md
 "       * :GoInstallBinaries
@@ -279,7 +280,7 @@ cmp.setup.cmdline(':', {
 -- Setup lspconfig.
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-require'lspconfig'.clangd.setup{
+vim.lsp.config.clangd = {
     cmd = {
         "clangd",
         "--background-index",
@@ -289,7 +290,7 @@ require'lspconfig'.clangd.setup{
     capabilities = capabilities
 }
 -- pyls expects `~/.config/flake8` as global setup
-require'lspconfig'.pylsp.setup{
+vim.lsp.config.pylsp = {
     settings = {
         pylsp = {
             configurationSources = { "flake8" }
@@ -298,11 +299,11 @@ require'lspconfig'.pylsp.setup{
     capabilities = capabilities
 }
 
-require'lspconfig'.elixirls.setup{
+vim.lsp.config.elixirls = {
     cmd = { os.getenv( "HOME" ) .. "/.config/elixir-ls/language_server.sh" };
 }
 
-require'lspconfig'.gopls.setup{
+vim.lsp.config.gopls = {
     capabilities = capabilities,
     cmd = {"gopls"},
     filetypes = { "go", "gomod", "gowork", "gotmpl" },
@@ -315,20 +316,16 @@ require'lspconfig'.gopls.setup{
     },
 }
 
-require'lspconfig'.bashls.setup{
+vim.lsp.config.bashls = {
     filetypes={"sh", "zsh"},
     capabilities = capabilities
 }
 
-require'lspconfig'.dockerls.setup{
+vim.lsp.config.dockerls = {
     capabilities = capabilities
 }
 
-require'nvim-autopairs'.setup{
-    capabilities = capabilities
-}
-
-require'lspconfig'.rust_analyzer.setup{
+vim.lsp.config.rust_analyzer = {
     settings = {
         ['rust-analyzer'] = {
             imports = {
@@ -349,6 +346,11 @@ require'lspconfig'.rust_analyzer.setup{
     },
     capabilities = capabilities
 }
+
+require'nvim-autopairs'.setup{
+    capabilities = capabilities
+}
+
 
 local actions = require "telescope.actions"
 

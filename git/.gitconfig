@@ -3,7 +3,6 @@
 [user]
 	email = a.stavonin@gmail.com
 	name = Alexander Stavonin
-	signingkey = 00EE9556A966B9CB
 [diff]
 	tool = bc
 [merge]
@@ -12,5 +11,3 @@
 	trustExitCode = true
 [alias]
 	lgb = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset%n' --abbrev-commit --date=relative --branches
-[commit]
-	gpgsign = true
