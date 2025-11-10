@@ -126,10 +126,15 @@ TMUX_SPLIT=${TMUX_SPLIT:-40}
 if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]] || [[ ! "$TERM_PROGRAM" == "vscode" ]]; then
     if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
         tmux attach-session -t "dev" ||
-            tmux new-session -s "dev" \; \
+            tmux new-session -s "dev" -n "Work" \; \
                 split-window -h -l 40% \; \
                 split-window -v \; \
-                selectp -t 0 \; attach
+                selectp -t 0 \; \
+                new-window -n "Home" \; \
+                split-window -h -l 40% \; \
+                split-window -v \; \
+                selectp -t 0 \; \
+                select-window -t 0 \; attach
     fi
 fi
 
@@ -140,6 +145,25 @@ fi
 alias vim='nvim'
 alias ll='ls -ahl'
 export EDITOR='nvim'
+
+# Tmux window creation functions
+tmw-home() {
+    tmux new-window -n "Home" \; \
+        split-window -h -l 40% \; \
+        split-window -v \; \
+        selectp -t 0
+}
+
+tmw-work() {
+    tmux new-window -n "Work" \; \
+        split-window -h -l 40% \; \
+        split-window -v \; \
+        selectp -t 0
+}
+
+tmw-ssh() {
+    tmux new-window -n "SSH"
+}
 
 fpath=($fpath ~/.zsh/completion)
 fpath=($fpath ~/.docker/completions)
