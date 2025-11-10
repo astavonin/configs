@@ -347,10 +347,18 @@ vim.lsp.config.rust_analyzer = {
     capabilities = capabilities
 }
 
+-- Enable all configured LSP servers
+vim.lsp.enable('clangd')
+vim.lsp.enable('pylsp')
+vim.lsp.enable('elixirls')
+vim.lsp.enable('gopls')
+vim.lsp.enable('bashls')
+vim.lsp.enable('dockerls')
+vim.lsp.enable('rust_analyzer')
+
 require'nvim-autopairs'.setup{
     capabilities = capabilities
 }
-
 
 local actions = require "telescope.actions"
 
