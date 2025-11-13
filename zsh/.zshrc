@@ -162,7 +162,7 @@ tmw-work() {
 }
 
 tmw-ssh() {
-    tmux new-window -n "SSH"
+    tmux new-window -n "Ubuntu" "ssh ubuntu"
 }
 
 fpath=($fpath ~/.zsh/completion)
@@ -172,4 +172,4 @@ compinit
 
 complete -C '/usr/local/bin/aws_completer' aws
 
-
+zstyle ':completion:*:scp:*' remote-access yes
