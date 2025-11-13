@@ -146,6 +146,11 @@ alias vim='nvim'
 alias ll='ls -ahl'
 export EDITOR='nvim'
 
+# Alias batcat to bat if bat is not available but batcat is
+if ! command -v bat &> /dev/null && command -v batcat &> /dev/null; then
+    alias bat='batcat'
+fi
+
 # Tmux window creation functions
 tmw-home() {
     tmux new-window -n "Home" \; \
