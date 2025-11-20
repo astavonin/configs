@@ -90,6 +90,20 @@ function! InitExternalPlugins()
     endif
 endfunction
 
+function! ConfigureSession()
+    " Configure what to save in sessions
+    set sessionoptions=buffers,curdir,folds,tabpages,winsize
+
+    " Session file location (per-directory)
+    let s:session_file = '.session.vim'
+
+    " Auto-save session on exit
+    autocmd VimLeave * execute 'mksession! ' . s:session_file
+
+    " Auto-restore session on start (only if nvim was started without file arguments)
+    autocmd VimEnter * nested if argc() == 0 && filereadable(s:session_file) | execute 'source ' . s:session_file | endif
+endfunction
+
 function! BindKeys()
     nnoremap <silent> gd    :lua require('telescope.builtin').lsp_definitions()<CR>
     nnoremap <silent> gD    <cmd>lua vim.lsp.buf.declaration()<CR>
@@ -218,6 +232,7 @@ call BindKeys()
 call ConfigureView()
 call InitExternalPlugins()
 call Spelling()
+call ConfigureSession()
 
 
 lua << EOF
