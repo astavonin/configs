@@ -170,6 +170,21 @@ tmw-ssh() {
     tmux new-window -n "Ubuntu" "ssh ubuntu"
 }
 
+# Sync current pane's cwd to all panes in a target window (default: current)
+tmw-sync() {
+    [[ -z "$TMUX" ]] && { echo "tmw-sync: run inside tmux"; return 1; }
+
+    local target_window="${1:-$(tmux display-message -p '#W')}"
+    local cwd="$PWD"
+    local escaped_cwd; escaped_cwd=$(printf '%q' "$cwd")
+
+    tmux list-panes -F '#{window_name} #{pane_id}' |
+        while read -r win pane; do
+            [[ "$win" == "$target_window" ]] || continue
+            tmux send-keys -t "$pane" "cd -- ${escaped_cwd}" C-m
+        done
+}
+
 fpath=($fpath ~/.zsh/completion)
 fpath=($fpath ~/.docker/completions)
 autoload -Uz compinit
