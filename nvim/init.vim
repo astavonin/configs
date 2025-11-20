@@ -356,6 +356,22 @@ vim.lsp.enable('bashls')
 vim.lsp.enable('dockerls')
 vim.lsp.enable('rust_analyzer')
 
+-- Define ClangdSwitchSourceHeader command for switching between .cpp/.h files
+vim.api.nvim_create_user_command('ClangdSwitchSourceHeader', function()
+    local params = { uri = vim.uri_from_bufnr(0) }
+    vim.lsp.buf_request(0, 'textDocument/switchSourceHeader', params, function(err, result)
+        if err then
+            vim.notify('Error switching source/header: ' .. err.message, vim.log.levels.ERROR)
+            return
+        end
+        if not result then
+            vim.notify('Corresponding source/header file not found', vim.log.levels.WARN)
+            return
+        end
+        vim.cmd('edit ' .. vim.uri_to_fname(result))
+    end)
+end, {})
+
 require'nvim-autopairs'.setup{
     capabilities = capabilities
 }
