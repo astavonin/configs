@@ -357,6 +357,9 @@ vim.lsp.config.rust_analyzer = {
             procMacro = {
                 enable = true
             },
+            check = {
+                command = "clippy"
+            },
         }
     },
     capabilities = capabilities
