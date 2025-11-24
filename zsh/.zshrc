@@ -166,8 +166,16 @@ tmw-work() {
         selectp -t 0
 }
 
-tmw-ssh() {
+tmw-ubuntu() {
     tmux new-window -n "Ubuntu" "ssh ubuntu"
+}
+
+tmw-pi() {
+    tmux new-window -n "Pi" "ssh pi"
+}
+
+tmw-mac() {
+    tmux new-window -n "Mac" "ssh mac"
 }
 
 # Sync current pane's cwd to all panes in a target window (default: current)
