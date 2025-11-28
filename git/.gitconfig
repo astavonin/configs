@@ -4,10 +4,25 @@
 	email = a.stavonin@gmail.com
 	name = Alexander Stavonin
 [diff]
-	tool = bc
+	tool = bcompare
 [merge]
-	tool = bc
-[mergetool "bc"]
+	tool = bcompare
+[mergetool "bcompare"]
 	trustExitCode = true
 [alias]
 	lgb = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset%n' --abbrev-commit --date=relative --branches
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+[safe]
+	directory = *
+[pull]
+	rebase = true
+
+# Sign commits only for GitHub repos
+[includeIf "hasconfig:remote.*.url:git@github.com:*/**"]
+	path = ~/.gitconfig-github
+[includeIf "hasconfig:remote.*.url:https://github.com/**"]
+	path = ~/.gitconfig-github
