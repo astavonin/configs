@@ -111,8 +111,8 @@ function! BindKeys()
     nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
     nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
     nnoremap <silent> gr    :lua require('telescope.builtin').lsp_references()<CR>
-    nnoremap <silent> g0    :lua require('telescope.builtin').document_symbols()<CR>
-    nnoremap <silent> gW    :lua require('telescope.builtin').workspace_symbols()<CR>
+    nnoremap <silent> gw    :lua require('telescope.builtin').lsp_document_symbols()<CR>
+    nnoremap <silent> gW    :lua require('telescope.builtin').lsp_workspace_symbols()<CR>
     nnoremap <silent> ga    :lua vim.lsp.buf.code_action()<CR>
     nnoremap <silent> ge    :lua vim.diagnostic.open_float()<CR>
     nnoremap <silent> gR    <cmd>lua vim.lsp.buf.rename()<CR>
@@ -353,12 +353,14 @@ vim.lsp.config.rust_analyzer = {
                 buildScripts = {
                     enable = true,
                 },
+                features = "all",
             },
             procMacro = {
                 enable = true
             },
             check = {
-                command = "clippy"
+                command = "clippy",
+                allTargets = true,
             },
         }
     },
