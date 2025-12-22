@@ -188,7 +188,7 @@ call plug#begin()
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim'
     Plug 'nvim-telescope/telescope-ui-select.nvim'
-    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSInstall c cpp python go bash java json elixir erlang rust lua vim vimdoc query markdown markdown_inline cmake proto yaml'}
 
     " PlantUML
     Plug 'aklt/plantuml-syntax'
@@ -236,6 +236,10 @@ call ConfigureSession()
 
 
 lua << EOF
+
+-- Allow project-local .nvim.lua files
+vim.o.exrc = true
+vim.o.secure = true  -- Prompts before loading untrusted configs
 
 local cmp = require'cmp'
 cmp.setup({
@@ -402,6 +406,10 @@ require('telescope').setup{
 defaults = {
     layout_strategy = 'vertical',
     layout_config = { height = 0.95 },
+    -- Disable treesitter in previews to avoid query errors
+    preview = {
+      treesitter = false
+    },
     },
   pickers = {
     buffers = {
@@ -417,17 +425,28 @@ defaults = {
 }
 require('telescope').load_extension 'ui-select'
 
-require('nvim-treesitter.configs').setup {
-    -- A list of parser names, or "all"
-    ensure_installed = { "c", "cpp", "python", "go", "bash", "java", "json", "elixir",
-                        "erlang", "rust", "lua", "vim", "vimdoc", "query", "markdown",
-                        "markdown_inline", "cmake", "proto", "yaml" },
-    auto_install = true,
-    sync_install = false,
-    highlight = {
-        enable = true,
-        },
-    }
+-- Add nvim-treesitter runtime directory to runtimepath for queries
+-- This is required because the plugin has a non-standard directory structure
+local ts_runtime = vim.fn.stdpath('data') .. '/plugged/nvim-treesitter/runtime'
+if vim.fn.isdirectory(ts_runtime) == 1 then
+  vim.opt.runtimepath:append(ts_runtime)
+end
+
+-- Enable treesitter highlighting for all filetypes (auto-detects if parser is available)
+-- Skip filetypes with known query errors
+local ts_blacklist = { 'vim', 're2c', 'commonlisp' }
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = '*',
+    callback = function()
+        if vim.tbl_contains(ts_blacklist, vim.bo.filetype) then
+            return
+        end
+        local ok, _ = pcall(vim.treesitter.start)
+        if not ok then
+            -- Parser not available for this filetype, silently skip
+        end
+    end,
+})
 
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
