@@ -121,10 +121,13 @@ source $HOME/.zsh_local
 eval "$(fzf --zsh)"
 
 source $HOME/.cargo/env
+source $HOME/.zshenv
 
 TMUX_SPLIT=${TMUX_SPLIT:-40}
-if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]] || [[ ! "$TERM_PROGRAM" == "vscode" ]]; then
+# Skip tmux for JetBrains IDEs
+if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]]; then
     if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+        # Regular terminal - use "dev" session with complex layout
         tmux attach-session -t "dev" ||
             tmux new-session -s "dev" -n "Work" \; \
                 split-window -h -l 40% \; \
@@ -152,43 +155,37 @@ if ! command -v bat &> /dev/null && command -v batcat &> /dev/null; then
 fi
 
 # Tmux window creation functions
-tmw-home() {
-    tmux new-window -n "Home" \; \
-        split-window -h -l 40% \; \
-        split-window -v \; \
+tm-new() {
+    tmux new-window -c ~ -n "session_$RANDOM" \; \
+        split-window -c ~ -h -l 40% \; \
+        split-window -c ~ -v \; \
         selectp -t 0
 }
 
-tmw-work() {
-    tmux new-window -n "Work" \; \
-        split-window -h -l 40% \; \
-        split-window -v \; \
-        selectp -t 0
+tm-ubuntu() {
+    tmux new-window -n "SSH: Ubuntu" "ssh ubuntu"
 }
 
-tmw-ubuntu() {
-    tmux new-window -n "Ubuntu" "ssh ubuntu"
+tm-pi() {
+    tmux new-window -n "SSH: Pi" "ssh pi"
 }
 
-tmw-pi() {
-    tmux new-window -n "Pi" "ssh pi"
-}
-
-tmw-mac() {
-    tmux new-window -n "Mac" "ssh mac"
+tm-mac() {
+    tmux new-window -n "SSH: Mac" "ssh mac"
 }
 
 # Sync current pane's cwd to all panes in a target window (default: current)
-tmw-sync() {
+tm-sync() {
     [[ -z "$TMUX" ]] && { echo "tmw-sync: run inside tmux"; return 1; }
 
     local target_window="${1:-$(tmux display-message -p '#W')}"
+    local current_pane="$(tmux display-message -p '#{pane_id}')"
     local cwd="$PWD"
     local escaped_cwd; escaped_cwd=$(printf '%q' "$cwd")
 
     tmux list-panes -F '#{window_name} #{pane_id}' |
         while read -r win pane; do
-            [[ "$win" == "$target_window" ]] || continue
+            [[ "$win" == "$target_window" && "$pane" != "$current_pane" ]] || continue
             tmux send-keys -t "$pane" "cd -- ${escaped_cwd}" C-m
         done
 }

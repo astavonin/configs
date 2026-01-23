@@ -175,8 +175,9 @@ function! s:TmSync()
 
     let l:cwd = getcwd()
     let l:target_window = substitute(system("tmux display-message -p '#W'"), '\n', '', 'g')
+    let l:current_pane = substitute(system("tmux display-message -p '#{pane_id}'"), '\n', '', 'g')
 
-    let l:cmd = "tmux list-panes -F '#{window_name} #{pane_id}' | while read -r win pane; do [[ \"$win\" == \"" . l:target_window . "\" ]] || continue; tmux send-keys -t \"$pane\" \"cd -- " . shellescape(l:cwd) . "\" C-m; done"
+    let l:cmd = "tmux list-panes -F '#{window_name} #{pane_id}' | while read -r win pane; do [[ \"$win\" == \"" . l:target_window . "\" && \"$pane\" != \"" . l:current_pane . "\" ]] || continue; tmux send-keys -t \"$pane\" \"cd -- " . shellescape(l:cwd) . "\" C-m; done"
 
     call system(l:cmd)
     echo 'Synced cwd to all panes in window: ' . l:target_window
@@ -201,6 +202,8 @@ endfunction
 "   * gopls: https://github.com/golang/tools/blob/master/gopls/README.md
 "       * :GoInstallBinaries
 "   * elixir-ls: https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#elixirls
+"   * Rust: rust-analyzer (install via rustup component add rust-analyzer)
+"   * Zig: zls (intall zvm: https://www.zvm.app/, then zvm i master --zls)
 " * PlantUML:
 "   * PlantUML: sudo apt-get install -y plantuml graphviz
 
@@ -219,7 +222,7 @@ call plug#begin()
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim'
     Plug 'nvim-telescope/telescope-ui-select.nvim'
-    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSInstall c cpp python go bash java json elixir erlang rust lua vim vimdoc query markdown markdown_inline cmake proto yaml'}
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSInstall c cpp python go bash java json elixir erlang rust lua vim vimdoc query markdown markdown_inline cmake proto yaml zig'}
 
     " PlantUML
     Plug 'aklt/plantuml-syntax'
@@ -245,6 +248,7 @@ call plug#begin()
     Plug 'mzlogin/vim-markdown-toc'
     Plug 'godlygeek/tabular'
     Plug 'plasticboy/vim-markdown'
+    Plug 'ziglang/zig.vim'
 
     " programming language toolings
     Plug 'tpope/vim-fugitive'
@@ -398,6 +402,10 @@ vim.lsp.config.rust_analyzer = {
     capabilities = capabilities
 }
 
+vim.lsp.config.zls = {
+    capabilities = capabilities
+}
+
 -- Enable all configured LSP servers
 vim.lsp.enable('clangd')
 vim.lsp.enable('pylsp')
@@ -406,6 +414,7 @@ vim.lsp.enable('gopls')
 vim.lsp.enable('bashls')
 vim.lsp.enable('dockerls')
 vim.lsp.enable('rust_analyzer')
+vim.lsp.enable('zls')
 
 -- Define ClangdSwitchSourceHeader command for switching between .cpp/.h files
 vim.api.nvim_create_user_command('ClangdSwitchSourceHeader', function()
