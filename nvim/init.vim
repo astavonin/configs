@@ -7,20 +7,14 @@ function! ConfigureView()
     set hlsearch
     set ignorecase
     set smartcase
-    set nocompatible
     set ruler
     set showcmd
     set foldenable
     set foldlevel=100
     set foldmethod=indent
     set noerrorbells visualbell t_vb=
-    autocmd GUIEnter * set visualbell t_vb=
     set mouse=a
-    set mousemodel=popup
     set hidden
-    set guioptions-=T
-    set ch=1
-    set mousehide
     set autoindent
     set nowrap
     set expandtab
@@ -29,12 +23,10 @@ function! ConfigureView()
     set tabstop=4
     set smarttab
     set laststatus=2
-    set smartindent
     set showmatch
     set iskeyword=@,48-57,_,192-255
     set backspace=indent,eol,start
     set cursorline
-    syntax enable
     highlight CursorLine guibg=lightblue ctermbg=lightgray
     highlight CursorLine term=none cterm=none
     set history=200
@@ -46,14 +38,21 @@ function! ConfigureView()
     set cmdheight=1
     let mapleader = "\\"
 
+    " Persistent undo
+    set undofile
+    set undodir=~/.config/nvim/undo
+    set undolevels=10000
+    call system('mkdir -p ~/.config/nvim/undo')
+
     set notermguicolors
     set background=light
     colorscheme nord
 
-    " jump to the last known cursor position on file read
-    if has("autocmd")
-        au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-    endif
+    " Jump to last cursor position on file read
+    augroup restore_cursor
+        autocmd!
+        autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+    augroup END
 endfunc
 
 function! InitExternalPlugins()
@@ -67,17 +66,21 @@ function! InitExternalPlugins()
     " NERDCommenter
     let g:NERDSpaceDelims = 1
 
-    autocmd BufWritePre *.go,*.cpp,*.hpp,*.c,*.cc,*.h,*.py,*el,*.rs,BUILD silent! :Neoformat
+    " Auto-format on save
+    augroup auto_format
+        autocmd!
+        autocmd BufWritePre *.go,*.cpp,*.hpp,*.c,*.cc,*.h,*.py,*el,*.rs,BUILD silent! :Neoformat
+    augroup END
     let g:neoformat_enabled_python = ['isort', 'black']
 
-    autocmd FileType markdown,plaintex setlocal wrap
+    " Wrap text in markdown/latex
+    augroup text_wrapping
+        autocmd!
+        autocmd FileType markdown,plaintex setlocal wrap
+    augroup END
 
     let g:airline#extensions#branch#displayed_head_limit = 10
     let g:airline#extensions#branch#format = 1
-
-    " vim-cpp-enhanced-highlight
-    let g:cpp_class_scope_highlight = 1
-    let g:cpp_member_variable_highlight = 1
 
     " for vim-markdown-toc generator
     let g:vmt_dont_insert_fence = 1
@@ -97,11 +100,12 @@ function! ConfigureSession()
     " Session file location (per-directory)
     let s:session_file = '.session.vim'
 
-    " Auto-save session on exit
-    autocmd VimLeave * execute 'mksession! ' . s:session_file
-
-    " Auto-restore session on start (only if nvim was started without file arguments)
-    autocmd VimEnter * nested if argc() == 0 && filereadable(s:session_file) | execute 'source ' . s:session_file | endif
+    " Auto-save and restore sessions
+    augroup session_management
+        autocmd!
+        autocmd VimLeave * execute 'mksession! ' . s:session_file
+        autocmd VimEnter * nested if argc() == 0 && filereadable(s:session_file) | execute 'source ' . s:session_file | endif
+    augroup END
 endfunction
 
 function! BindKeys()
@@ -131,6 +135,7 @@ function! BindKeys()
     nmap <f12> :Neoformat<CR>
     nmap <silent> <Leader>C :Neomake!<cr>
 
+    nnoremap <silent> <ESC> :nohlsearch<CR>
 
     " vim-vsnip
     imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
@@ -142,14 +147,40 @@ function! BindKeys()
     nnoremap <leader>cf :let @+=expand("%")<CR>
     " absolute path  (/something/src/foo.txt)
     nnoremap <leader>cF :let @+=expand("%:p")<CR>
+
+    " tmux sync cwd to all panes
+    nnoremap <leader>ms :TmSync<CR>
 endfunction
 
 function! Spelling()
-    autocmd BufRead,BufNewFile *.md setlocal spell
-    autocmd BufRead,BufNewFile *.txt setlocal spell
-    autocmd FileType gitcommit setlocal spell
+    augroup spelling
+        autocmd!
+        autocmd BufRead,BufNewFile *.md setlocal spell
+        autocmd BufRead,BufNewFile *.txt setlocal spell
+        autocmd FileType gitcommit setlocal spell
+    augroup END
     set complete+=kspell
 endfunc
+
+" TmSync command - syncs nvim's cwd to all tmux panes in current window
+command! TmSync call s:TmSync()
+
+function! s:TmSync()
+    if empty($TMUX)
+        echohl ErrorMsg
+        echo 'TmSync: run inside tmux'
+        echohl None
+        return
+    endif
+
+    let l:cwd = getcwd()
+    let l:target_window = substitute(system("tmux display-message -p '#W'"), '\n', '', 'g')
+
+    let l:cmd = "tmux list-panes -F '#{window_name} #{pane_id}' | while read -r win pane; do [[ \"$win\" == \"" . l:target_window . "\" ]] || continue; tmux send-keys -t \"$pane\" \"cd -- " . shellescape(l:cwd) . "\" C-m; done"
+
+    call system(l:cmd)
+    echo 'Synced cwd to all panes in window: ' . l:target_window
+endfunction
 
 " have to install:
 " * pip install --upgrade pynvim
@@ -223,9 +254,6 @@ call plug#begin()
     Plug 'elixir-editors/vim-elixir'
     Plug 'dijkstracula/vim-plang'
     Plug 'fredrikaverpil/godoc.nvim'
-    Plug 'folke/snacks.nvim'
-    Plug 'echasnovski/mini.pick'
-    Plug 'ibhagwan/fzf-lua'
 call plug#end()
 
 call BindKeys()
@@ -263,7 +291,6 @@ cmp.setup({
     sources = cmp.config.sources({
         { name = 'nvim_lsp' },
         { name = 'vsnip' },
-        { name = 'buffer' },
     }, {
         { name = 'buffer' },
     })
@@ -471,7 +498,7 @@ require("nvim-tree").setup({
 
 require('godoc').setup({
     picker = {
-        type = "telescope", -- native (vim.ui.select) | telescope | snacks | mini | fzf_lua
+        type = "telescope",
     },
 })
 
