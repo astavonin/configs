@@ -123,20 +123,13 @@ eval "$(fzf --zsh)"
 source $HOME/.cargo/env
 source $HOME/.zshenv
 
-# Skip tmux for JetBrains IDEs
+# Auto-start tmux with C-b c layout (skip for JetBrains IDEs)
 if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]]; then
     if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-        # Regular terminal - use "dev" session with complex layout
-        tmux attach-session -t "dev" ||
-            tmux new-session -s "dev" -n "Work" \; \
-                split-window -h -l 45% \; \
-                split-window -v \; \
-                selectp -t 0 \; \
-                new-window -n "Home" \; \
-                split-window -h -l 45% \; \
-                split-window -v \; \
-                selectp -t 0 \; \
-                select-window -t 0 \; attach
+        tmux new-session \; \
+            split-window -c ~ -h -l 45% \; \
+            split-window -c ~ -v \; \
+            select-pane -t 0
     fi
 fi
 
@@ -155,10 +148,7 @@ fi
 
 # Tmux window creation functions
 tm-new() {
-    tmux new-window -c ~ -n "session_$RANDOM" \; \
-        split-window -c ~ -h -l 45% \; \
-        split-window -c ~ -v \; \
-        selectp -t 0
+    tmux send-keys C-b c
 }
 
 tm-ubuntu() {
