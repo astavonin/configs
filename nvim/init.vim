@@ -330,7 +330,7 @@ cmp.setup.cmdline(':', {
 -- Setup lspconfig.
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-vim.lsp.config.clangd = {
+vim.lsp.config('clangd', {
     cmd = {
         "clangd",
         "--background-index",
@@ -338,22 +338,22 @@ vim.lsp.config.clangd = {
         "--query-driver=**",
     },
     capabilities = capabilities
-}
+})
 -- pyls expects `~/.config/flake8` as global setup
-vim.lsp.config.pylsp = {
+vim.lsp.config('pylsp', {
     settings = {
         pylsp = {
             configurationSources = { "flake8" }
         }
     },
     capabilities = capabilities
-}
+})
 
-vim.lsp.config.elixirls = {
-    cmd = { os.getenv( "HOME" ) .. "/.config/elixir-ls/language_server.sh" };
-}
+vim.lsp.config('elixirls', {
+    cmd = { os.getenv("HOME") .. "/.config/elixir-ls/language_server.sh" },
+})
 
-vim.lsp.config.gopls = {
+vim.lsp.config('gopls', {
     capabilities = capabilities,
     cmd = {"gopls"},
     filetypes = { "go", "gomod", "gowork", "gotmpl" },
@@ -364,18 +364,18 @@ vim.lsp.config.gopls = {
             staticcheck = true,
         },
     },
-}
+})
 
-vim.lsp.config.bashls = {
-    filetypes={"sh", "zsh"},
+vim.lsp.config('bashls', {
+    filetypes = {"sh", "zsh"},
     capabilities = capabilities
-}
+})
 
-vim.lsp.config.dockerls = {
+vim.lsp.config('dockerls', {
     capabilities = capabilities
-}
+})
 
-vim.lsp.config.rust_analyzer = {
+vim.lsp.config('rust_analyzer', {
     settings = {
         ['rust-analyzer'] = {
             imports = {
@@ -400,11 +400,11 @@ vim.lsp.config.rust_analyzer = {
         }
     },
     capabilities = capabilities
-}
+})
 
-vim.lsp.config.zls = {
+vim.lsp.config('zls', {
     capabilities = capabilities
-}
+})
 
 -- Enable all configured LSP servers
 vim.lsp.enable('clangd')
@@ -416,10 +416,73 @@ vim.lsp.enable('dockerls')
 vim.lsp.enable('rust_analyzer')
 vim.lsp.enable('zls')
 
+-- LSP management commands: not registered by nvim-lspconfig when using the native vim.lsp API
+vim.api.nvim_create_user_command('LspStart', function()
+    vim.api.nvim_exec_autocmds('FileType', { pattern = vim.bo.filetype })
+end, {})
+
+vim.api.nvim_create_user_command('LspStop', function()
+    for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+        client:stop()
+    end
+end, {})
+
+vim.api.nvim_create_user_command('LspRestart', function()
+    for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+        client:stop()
+    end
+    vim.defer_fn(function() vim.cmd('edit') end, 500)
+end, {})
+
+vim.api.nvim_create_user_command('LspDebug', function()
+    local ft = vim.bo.filetype
+    local lines = { '=== LspDebug ===', 'filetype: ' .. ft }
+
+    -- FileType autocommands registered for this filetype
+    local aus = vim.api.nvim_get_autocmds({ event = 'FileType', pattern = ft })
+    table.insert(lines, string.format('FileType autocmds for %q: %d', ft, #aus))
+    for _, au in ipairs(aus) do
+        table.insert(lines, string.format('  group=%s cb=%s', tostring(au.group_name), tostring(au.callback)))
+    end
+
+    -- Merged clangd config (filetypes, root_markers, cmd)
+    local cfg = vim.lsp.config.clangd or {}
+    table.insert(lines, 'clangd.filetypes: ' .. vim.inspect(cfg.filetypes))
+    table.insert(lines, 'clangd.root_markers: ' .. vim.inspect(cfg.root_markers))
+    table.insert(lines, 'clangd.cmd: ' .. vim.inspect(cfg.cmd))
+
+    -- Attached clients
+    local clients = vim.lsp.get_clients({ bufnr = 0 })
+    table.insert(lines, 'attached clients: ' .. #clients)
+    for _, c in ipairs(clients) do
+        table.insert(lines, string.format('  %s id=%d root=%s', c.name, c.id, c.root_dir or 'none'))
+    end
+
+    vim.notify(table.concat(lines, '\n'), vim.log.levels.INFO)
+end, {})
+
+vim.api.nvim_create_user_command('LspInfo', function()
+    local clients = vim.lsp.get_clients({ bufnr = 0 })
+    if #clients == 0 then
+        vim.notify('No LSP clients attached to current buffer', vim.log.levels.WARN)
+        return
+    end
+    local lines = {}
+    for _, client in ipairs(clients) do
+        table.insert(lines, string.format('%s  id=%d  root=%s', client.name, client.id, client.root_dir or 'none'))
+    end
+    vim.notify(table.concat(lines, '\n'), vim.log.levels.INFO)
+end, {})
+
 -- Define ClangdSwitchSourceHeader command for switching between .cpp/.h files
 vim.api.nvim_create_user_command('ClangdSwitchSourceHeader', function()
+    local clients = vim.lsp.get_clients({ bufnr = 0, name = 'clangd' })
+    if #clients == 0 then
+        vim.notify('No clangd client attached', vim.log.levels.WARN)
+        return
+    end
     local params = { uri = vim.uri_from_bufnr(0) }
-    vim.lsp.buf_request(0, 'textDocument/switchSourceHeader', params, function(err, result)
+    clients[1]:request('textDocument/switchSourceHeader', params, function(err, result)
         if err then
             vim.notify('Error switching source/header: ' .. err.message, vim.log.levels.ERROR)
             return
@@ -429,7 +492,7 @@ vim.api.nvim_create_user_command('ClangdSwitchSourceHeader', function()
             return
         end
         vim.cmd('edit ' .. vim.uri_to_fname(result))
-    end)
+    end, 0)
 end, {})
 
 require'nvim-autopairs'.setup{
