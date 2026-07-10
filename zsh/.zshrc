@@ -139,6 +139,11 @@ fi
 
 alias vim='nvim'
 alias ll='ls -ahl'
+
+# Delete local branches whose remote tracking branch is gone
+git-gone() {
+    git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs -r git branch -D
+}
 export EDITOR='nvim'
 
 # Alias batcat to bat if bat is not available but batcat is
