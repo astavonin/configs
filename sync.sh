@@ -19,6 +19,18 @@ declare -a MAPPINGS=(
     "ghostty/config:${HOME_DIR}/.config/ghostty/config"
 )
 
+# Platform-specific mappings. The same repo is synced from both Linux and
+# macOS, so these stay out of the list above -- an unconditional entry would
+# build a dead ~/Library tree on Linux.
+if [[ "$(uname -s)" == "Darwin" ]]; then
+    # iTerm2 reads every file in DynamicProfiles/ at startup and on change, so
+    # the profile applies without a manual import. That import step is what let
+    # the checked-in profile drift from the live one in the first place.
+    MAPPINGS+=(
+        "iterm2/nord.json:${HOME_DIR}/Library/Application Support/iTerm2/DynamicProfiles/nord.json"
+    )
+fi
+
 DRY_RUN=false
 VERBOSE=false
 DIRECTION="" # "", "push", or "pull"
