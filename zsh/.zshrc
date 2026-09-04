@@ -139,10 +139,21 @@ if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]]; then
     if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
         # attach-session picks the most recently used session and fails when
         # no server is running, which is the signal to build the layout.
-        tmux attach-session 2> /dev/null || tmux new-session \; \
-            split-window -c ~ -h -l 45% \; \
-            split-window -c ~ -v \; \
-            select-pane -t 0
+        #
+        # It also fails on the first try from a shell Ghostty has just spawned
+        # -- rc=1, nothing on stderr -- with a live session sitting right there,
+        # while an identical call a fraction of a second later attaches fine.
+        # Retry before believing it: read as "no server", that transient failure
+        # builds a second, duplicate session on every launch. Suspected cause is
+        # Ghostty running the shell via "sh -c", leaving sh rather than zsh
+        # owning the tty, but that is unconfirmed -- the retry is a workaround,
+        # not a diagnosis.
+        tmux attach-session 2> /dev/null \
+            || { sleep 0.3; tmux attach-session 2> /dev/null; } \
+            || tmux new-session \; \
+                split-window -c ~ -h -l 45% \; \
+                split-window -c ~ -v \; \
+                select-pane -t 0
     fi
 fi
 
