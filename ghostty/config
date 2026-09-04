@@ -1,0 +1,29 @@
+# Migrated from the GNOME Terminal "Nord" profile
+# (dconf: /org/gnome/terminal/legacy/profiles:/:ed6f5e29-...)
+
+font-family = SauceCodePro Nerd Font Mono
+font-size = 12
+
+# Ghostty ships a Nord theme, but the nord-gnome-terminal variant differs in
+# five values. Take the theme as the base and restore those below, so colours
+# are identical to the profile this replaces rather than merely close.
+theme = Nord
+
+# Brighter black: nord3 proper, not the lightened variant Ghostty's theme uses.
+palette = 8=#4c566a
+
+# Cursor and selection were nord4-on-nord1 and nord8-on-nord0 in GNOME
+# Terminal; the bundled theme uses nord6 for both, which washes out against
+# the light foreground.
+cursor-color = #d8dee9
+cursor-text = #3b4252
+selection-background = #88c0d0
+selection-foreground = #2e3440
+
+# GNOME Terminal sent TERM=xterm-256color, which every host already knows;
+# xterm-ghostty is not in most remote terminfo databases, so a bare ssh would
+# land in a broken-looking session. ssh-terminfo installs the entry on first
+# connect, ssh-env downgrades TERM when that is not possible. Off by default
+# upstream. Only affects ssh started outside tmux -- inside, TERM is
+# tmux-256color and the remote never sees xterm-ghostty.
+shell-integration-features = cursor,no-sudo,title,path,ssh-env,ssh-terminfo
