@@ -23,6 +23,13 @@
 [delta]
 	syntax-theme = Nord
 
+# No fallback [user] here, deliberately. A repo whose remote matches none of
+# the includes below should fail with "Please tell me who you are" rather than
+# commit under a placeholder -- a junk identity lands in history and blame
+# silently, where a refusal does not. A [user] block added after the includes
+# is worse still: git expands each include in place and the last value wins,
+# so it overrides every per-remote identity while appearing to be a default.
+
 # Sign commits only for GitHub repos
 [includeIf "hasconfig:remote.*.url:git@github.com:*/**"]
 	path = ~/.gitconfig-github
