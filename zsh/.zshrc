@@ -1,6 +1,17 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
+# Homebrew is set up in ~/.zprofile, which zsh reads for login shells only, so
+# a non-login interactive shell starts without /opt/homebrew/bin -- and every
+# guard below that probes for a brew-installed binary (fzf, tmux) then fails
+# silently, skipping the feature rather than reporting anything. Re-apply here,
+# where every interactive shell sees it. The PATH test stops login shells from
+# prepending twice; the -x test keeps this inert on Linux, which shares
+# this file.
+if [[ -x /opt/homebrew/bin/brew && ":$PATH:" != *":/opt/homebrew/bin:"* ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -126,7 +137,9 @@ source $HOME/.zshenv
 # Auto-start tmux with C-b c layout (skip for JetBrains IDEs)
 if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]]; then
     if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-        tmux new-session \; \
+        # attach-session picks the most recently used session and fails when
+        # no server is running, which is the signal to build the layout.
+        tmux attach-session 2> /dev/null || tmux new-session \; \
             split-window -c ~ -h -l 45% \; \
             split-window -c ~ -v \; \
             select-pane -t 0
