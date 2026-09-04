@@ -43,3 +43,5 @@
 	path = ~/.gitconfig-cartrack
 [includeIf "hasconfig:remote.*.url:https://gitlab.cartrack.com/**"]
 	path = ~/.gitconfig-cartrack
+[credential]
+	helper = store
