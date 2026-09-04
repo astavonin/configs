@@ -16,6 +16,7 @@ declare -a MAPPINGS=(
     "c++/.clang-tidy:${HOME_DIR}/.clang-tidy"
     "rust/.ctags:${HOME_DIR}/.ctags"
     "bat/config:${HOME_DIR}/.config/bat/config"
+    "ghostty/config:${HOME_DIR}/.config/ghostty/config"
 )
 
 DRY_RUN=false
@@ -55,6 +56,25 @@ log() {
     if $VERBOSE; then
         echo "  $*"
     fi
+}
+
+# Modification time in epoch seconds, GNU stat or BSD stat.
+# Each branch is guarded on producing a number rather than on exit status: GNU
+# "stat -f" is filesystem-info, not the BSD time format, so it reads the "%m"
+# as a filename, fails, and still prints a filesystem report to stdout. Keying
+# off the exit code alone lets that report through as the mtime.
+mtime() {
+    local out
+    if out=$(stat -c %Y "$1" 2>/dev/null) && [[ "$out" =~ ^[0-9]+$ ]]; then
+        echo "$out"
+        return 0
+    fi
+    if out=$(stat -f %m "$1" 2>/dev/null) && [[ "$out" =~ ^[0-9]+$ ]]; then
+        echo "$out"
+        return 0
+    fi
+    echo "Cannot read modification time: $1" >&2
+    return 1
 }
 
 sync_file() {
@@ -99,8 +119,8 @@ sync_file() {
                 return
             fi
             local repo_mtime sys_mtime
-            repo_mtime=$(stat -f %m "$repo_file" 2>/dev/null || stat -c %Y "$repo_file")
-            sys_mtime=$(stat -f %m "$sys_file" 2>/dev/null || stat -c %Y "$sys_file")
+            repo_mtime=$(mtime "$repo_file")
+            sys_mtime=$(mtime "$sys_file")
             if [[ "$repo_mtime" -ge "$sys_mtime" ]]; then
                 action="to_sys"
             else
