@@ -148,8 +148,18 @@ if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]]; then
         # Ghostty running the shell via "sh -c", leaving sh rather than zsh
         # owning the tty, but that is unconfirmed -- the retry is a workaround,
         # not a diagnosis.
+        #
+        # With a saved environment on disk, start a bare single-pane session
+        # and let tmux-continuum refill it: resurrect overwrites the pane it
+        # finds only when the server holds exactly one, so splitting first
+        # would pin window 0 to this empty layout. Splits are the first-run
+        # fallback.
         tmux attach-session 2> /dev/null \
             || { sleep 0.3; tmux attach-session 2> /dev/null; } \
+            || { { [ -e ~/.local/share/tmux/resurrect/last ] \
+                    || [ -e ~/.tmux/resurrect/last ]; } \
+                && tmux new-session -d \
+                && tmux attach-session; } \
             || tmux new-session \; \
                 split-window -c ~ -h -l 45% \; \
                 split-window -c ~ -v \; \
