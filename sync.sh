@@ -29,6 +29,14 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
     MAPPINGS+=(
         "iterm2/nord.json:${HOME_DIR}/Library/Application Support/iTerm2/DynamicProfiles/nord.json"
     )
+else
+    # NetworkManager is Linux-only. Synced against the ~/.config copy, not the
+    # installed one: the dispatcher runs scripts out of /etc as root, and this
+    # script assumes no sudo. Installing is a separate manual step --
+    # see networkmanager/README.md.
+    MAPPINGS+=(
+        "networkmanager/90-forti-dns-fix:${HOME_DIR}/.config/forti-dns-fix/90-forti-dns-fix"
+    )
 fi
 
 DRY_RUN=false

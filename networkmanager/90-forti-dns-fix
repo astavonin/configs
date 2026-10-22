@@ -1,0 +1,182 @@
+#!/usr/bin/env bash
+# NetworkManager dispatcher hook: contain FortiClient's DNS hijack.
+#
+# FortiClient pushes corporate DNS onto the *physical* link with default-route=yes,
+# discarding the local router's DNS so every lookup goes to servers that are only
+# reachable inside the tunnel. It does this two ways, and both need handling:
+#
+#   1. RUNTIME — while the tunnel is up. Corrected by moving the pushed DNS onto
+#      the tunnel link, scoped to the corporate domains (see split_dns below).
+#
+#   2. PERSISTED — it writes ipv4.dns / ipv4.ignore-auto-dns / ipv4.routes into
+#      the saved connection profile, which netplan stores on disk. If FortiClient
+#      is killed rather than cleanly disconnected (a reboot stops the service),
+#      it never reverts, and the next boot applies corporate DNS to the wifi with
+#      no tunnel to reach it through — total DNS failure. Cleaned by sanitize().
+#
+# Fires for FortiClient only. NordVPN (nordlynx) and ExpressVPN (wgexpressvpn)
+# manage their own DNS and are deliberately left untouched.
+#
+# Install: the real file lives in dispatcher.d/no-wait.d/, and a SYMLINK to it
+# must exist in dispatcher.d/ — NM only enumerates dispatcher.d/, and treats a
+# symlink into no-wait.d/ as "run detached". A bare file in no-wait.d/ never runs.
+
+set -uo pipefail
+
+# Domains that must keep resolving through the corporate resolvers. Edit as needed.
+CORP_DOMAINS=('~cartrack.com' '~cartrack.sg')
+SETTLE_TIMEOUT=30              # seconds to wait for FortiClient to push DNS after "up"
+LOCK=/run/forti-dns-fix.lock
+
+IFACE="${1:-}"
+ACTION="${2:-}"
+UUID="${CONNECTION_UUID:-}"    # set by NetworkManager for the connection in play
+
+log() { logger -t forti-dns-fix -- "$*"; }
+
+[[ -n $IFACE ]] || exit 0
+
+# A private VPN owns DNS while it is up — never interfere with it.
+if ip -brief link show 2>/dev/null | grep -qE '^(nordlynx|wgexpressvpn)'; then
+  exit 0
+fi
+
+# A FortiClient tunnel only counts as active when its link is actually UP; a
+# leftover fctvpn device from a killed session sits there DOWN/NO-CARRIER.
+tunnel_active() {
+  ip -brief addr show 2>/dev/null | awk '/^fctvpn/ && $2 == "UP" { found = 1 } END { exit !found }'
+}
+
+link_dns() {
+  resolvectl dns "$1" 2>/dev/null \
+    | sed 's/^Link [0-9]* ([^)]*): *//' | tr ' ' '\n' | grep -E '^[0-9.]+$'
+}
+
+# ---------------------------------------------------------------- persisted ---
+# Strip FortiClient's overrides from a saved profile and re-apply it. Only ever
+# called when no tunnel is up, so anything found here is stale residue.
+sanitize() {
+  local target="${UUID:-}"
+  [[ -n $target ]] || target=$(nmcli -g GENERAL.CONNECTION device show "$IFACE" 2>/dev/null)
+  [[ -n $target ]] || return 1
+
+  local dns ignore
+  dns=$(nmcli -g ipv4.dns connection show "$target" 2>/dev/null)
+  ignore=$(nmcli -g ipv4.ignore-auto-dns connection show "$target" 2>/dev/null)
+  [[ $ignore == yes || -n $dns ]] || return 1   # clean already
+
+  nmcli connection modify "$target" \
+    ipv4.dns "" ipv4.ignore-auto-dns no \
+    ipv4.routes "" ipv4.ignore-auto-routes no \
+    ipv6.ignore-auto-dns no ipv6.ignore-auto-routes no 2>/dev/null || return 1
+
+  log "stripped stale FortiClient DNS/routes from '$target' (was dns=${dns:-none}) on $IFACE"
+  nmcli device reapply "$IFACE" >/dev/null 2>&1
+  return 0
+}
+
+# ------------------------------------------------------------------ runtime ---
+split_dns() {
+  local GW PHYS
+  read -r GW PHYS < <(ip route show default | awk '{print $3, $5; exit}')
+  if [[ -z ${PHYS:-} || $PHYS == fctvpn* ]]; then
+    log "no usable physical default route (got '${PHYS:-none}'); nothing to do"
+    return 0
+  fi
+
+  local -a CORP_DNS=()
+  hijacked() {
+    mapfile -t CORP_DNS < <(link_dns "$PHYS")
+    [[ ${#CORP_DNS[@]} -gt 0 && ${CORP_DNS[0]} != "$GW" ]]
+  }
+  apply() {
+    resolvectl dns    "$PHYS"  "$GW"            || return 1
+    resolvectl domain "$PHYS"  '~.'             || return 1
+    resolvectl dns    "$IFACE" "${CORP_DNS[@]}" || return 1
+    resolvectl domain "$IFACE" "${CORP_DOMAINS[@]}"
+  }
+
+  if [[ $ACTION == up ]]; then
+    # FortiClient pushes its DNS a few seconds after the tunnel activates (~8s
+    # observed); wait for it rather than correcting a link it has not touched yet.
+    local i
+    for ((i = 0; i < SETTLE_TIMEOUT; i++)); do
+      hijacked && break
+      sleep 1
+    done
+    hijacked || { log "no DNS override appeared on $PHYS within ${SETTLE_TIMEOUT}s; nothing to do"; return 0; }
+    sleep 3   # let FortiClient finish its last reapply before correcting it
+    hijacked || return 0
+  else
+    hijacked || return 0   # "reapply" with nothing to fix
+  fi
+
+  apply && log "split-DNS applied on $ACTION: $PHYS -> $GW; $IFACE -> ${CORP_DNS[*]} for ${CORP_DOMAINS[*]}"
+
+  sleep 5   # a reapply can still land after we correct it; re-assert once
+  if hijacked; then
+    apply && log "re-asserted split-DNS after FortiClient reapply"
+  fi
+}
+
+# ------------------------------------------------------------- stale routes ---
+# FortiClient can reconnect onto a NEW fctvpn device while leaving its proto
+# static routes pointing at the previous one, which is by then DOWN. The DNS
+# half of this hook keeps working throughout, so corporate names resolve
+# normally and only the connections hang -- which reads as "the server is down"
+# rather than as a local routing fault. Observed 2026-10-22: three fctvpn
+# devices, two DOWN, with 10.0.0.0/8 and every corporate /32 on a dead one,
+# two minutes after this hook had logged a successful split-DNS apply.
+#
+# Detect and log only. Deleting routes automatically is a bigger risk than the
+# fault it repairs: a wrong deletion here blackholes the whole machine, where a
+# wrong DNS entry costs one domain. The recovery command is logged instead.
+check_stale_routes() {
+  local live stale
+  live=$(ip -brief addr show 2>/dev/null | awk '/^fctvpn/ && $2 == "UP" { print $1; exit }')
+  [[ -n $live ]] || return 0
+
+  # Every fctvpn device named as a route target, minus the one that is up.
+  stale=$(ip route show 2>/dev/null \
+            | grep -oE 'dev fctvpn[a-z0-9]+' \
+            | awk '{ print $2 }' | sort -u | grep -vx "$live") || return 0
+  [[ -n $stale ]] || return 0
+
+  local dev count
+  for dev in $stale; do
+    count=$(ip route show 2>/dev/null | grep -c "dev ${dev}\b") || count=0
+    log "WARNING: ${count} route(s) still point at ${dev}, which is not the live tunnel (${live}). Corporate names will resolve while every connection to them hangs. Repair: sudo ip route flush dev ${dev}"
+  done
+}
+
+# ------------------------------------------------------------------- driver ---
+if [[ $IFACE == fctvpn* ]]; then
+  case $ACTION in up|reapply) ;; *) exit 0 ;; esac
+  tunnel_active || exit 0          # stale tunnel device auto-activating at boot
+  log "event: $IFACE $ACTION"
+else
+  [[ $ACTION == up ]] || exit 0
+  tunnel_active && exit 0          # FortiClient legitimately owns DNS right now
+fi
+
+# "up" and its burst of "reapply" events arrive within seconds of each other and
+# run in parallel under no-wait.d — serialize so they cannot race on resolvectl.
+exec 9>"$LOCK" || exit 0
+if ! flock -w 60 9; then
+  log "$ACTION: timed out waiting for lock; skipping"
+  exit 0
+fi
+
+if [[ $IFACE == fctvpn* ]]; then
+  split_dns
+  # After split_dns, not before: it sleeps through FortiClient's settle window,
+  # by which point FortiClient has finished moving routes around and a
+  # disagreement between the route table and the live device is real.
+  check_stale_routes
+else
+  sanitize
+fi
+
+# Always succeed: "nothing to do" is the common case, and a non-zero exit makes
+# NetworkManager log the dispatcher script as failed.
+exit 0
