@@ -230,3 +230,12 @@ zstyle ':completion:*:scp:*' remote-access yes
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# opencode
+export PATH=$HOME/.opencode/bin:$PATH
+
+# Claude Code — cumulative subagent cap per session (default 200).
+# Counts agents spawned over a session's life, not concurrent ones, and never
+# decrements. A multi-round review loop burns ~20 per issue; a long session
+# across several issues exhausted the default mid-round on 2026-10-20.
+export CLAUDE_CODE_MAX_SUBAGENTS_PER_SESSION=1000
