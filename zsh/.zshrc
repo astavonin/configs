@@ -162,7 +162,7 @@ if [[ ! "$TERMINAL_EMULATOR" == "JetBrains"* ]]; then
                 && tmux attach-session; } \
             || tmux new-session \; \
                 split-window -c ~ -h -l 45% \; \
-                split-window -c ~ -v \; \
+                split-window -c ~ -v -l 25% \; \
                 select-pane -t 0
     fi
 fi
