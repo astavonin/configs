@@ -17,6 +17,9 @@ declare -a MAPPINGS=(
     "rust/.ctags:${HOME_DIR}/.ctags"
     "bat/config:${HOME_DIR}/.config/bat/config"
     "ghostty/config:${HOME_DIR}/.config/ghostty/config"
+    # Personal hosts only. Work hosts live in ~/.ssh/config.work, which this
+    # config Includes and .gitignore excludes -- the repo is public.
+    "ssh/config:${HOME_DIR}/.ssh/config"
 )
 
 # Platform-specific mappings. The same repo is synced from both Linux and
@@ -154,13 +157,15 @@ sync_file() {
         echo "-> $repo_rel  =>  $sys_file"
         if ! $DRY_RUN; then
             mkdir -p "$(dirname "$sys_file")"
-            cp "$repo_file" "$sys_file"
+            # -p preserves mode: under umask 002 a bare cp yields 664, and ssh
+            # refuses to start with a group-writable ~/.ssh/config.
+            cp -p "$repo_file" "$sys_file"
         fi
     elif [[ "$action" == "to_repo" ]]; then
         echo "<- $sys_file  =>  $repo_rel"
         if ! $DRY_RUN; then
             mkdir -p "$(dirname "$repo_file")"
-            cp "$sys_file" "$repo_file"
+            cp -p "$sys_file" "$repo_file"
         fi
     fi
 }

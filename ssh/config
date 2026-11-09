@@ -1,0 +1,58 @@
+# Work hosts live in a separate, untracked file -- this one is versioned in the
+# public ~/projects/configs repo. Include must stay first: ssh takes the
+# first value it obtains for any keyword.
+Include ~/.ssh/config.work
+
+Host sysdev
+    HostName sysdev.me
+    IdentityFile ~/.ssh/id_rsa_sysdev
+
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_github
+    IdentitiesOnly yes
+
+Host ubuntu
+    HostName 192.168.10.126
+    User astavonin
+    IdentityFile ~/.ssh/id_rsa_ubuntu
+    IdentitiesOnly yes
+
+# SOCKS5 proxy into the VPN-attached ubuntu box (use from the Mac):
+#   ssh -fN ubuntu-proxy   ->   SOCKS5 on 127.0.0.1:1080, DNS resolved remotely
+Host ubuntu-proxy
+    HostName 192.168.10.126
+    User astavonin
+    IdentityFile ~/.ssh/id_rsa_ubuntu
+    IdentitiesOnly yes
+    DynamicForward 127.0.0.1:1080
+    ExitOnForwardFailure yes
+    ServerAliveInterval 30
+    ServerAliveCountMax 3
+
+Host rpi5
+    HostName 192.168.10.113
+    User astavonin
+    IdentityFile ~/.ssh/id_ed25519_pi
+    IdentitiesOnly yes
+
+Host mac
+    HostName 192.168.10.123
+    User astavonin
+    IdentityFile ~/.ssh/id_ed25519_mac
+    IdentitiesOnly yes
+
+Host opi6
+    HostName 192.168.10.130
+    User astavonin
+    IdentityFile ~/.ssh/id_ed25519_opi6
+    IdentitiesOnly yes
+
+# Same board via mDNS -- works even if the address changes, but needs avahi
+# running on both ends and multicast across the link.
+Host opi6-mdns
+    HostName opi6.local
+    User astavonin
+    IdentityFile ~/.ssh/id_ed25519_opi6
+    IdentitiesOnly yes
